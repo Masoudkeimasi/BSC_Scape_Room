@@ -48,6 +48,7 @@ export const contentSchema = z.object({
       expected: z.number().finite(),
       tolerance: z.number().nonnegative().max(1),
       unit: z.string(),
+      kind: z.enum(["difference"]).optional(),
     }),
   ),
   vision: z
@@ -79,8 +80,8 @@ export const contentSchema = z.object({
 export function validateContent(raw: unknown): Content {
   const c = contentSchema.parse(raw);
   const errors: string[] = [];
-  if (c.options.length !== 144) errors.push("Expected exactly 144 options");
-  if (new Set(c.options.map((o) => o.id)).size !== 144)
+  if (c.options.length !== 128) errors.push("Expected exactly 128 options");
+  if (new Set(c.options.map((o) => o.id)).size !== c.options.length)
     errors.push("Duplicate option IDs");
   if (c.chains.length !== 12 || new Set(c.chains.map((x) => x.id)).size !== 12)
     errors.push("Expected 12 unique chains");
@@ -89,8 +90,8 @@ export function validateContent(raw: unknown): Content {
       const a = c.options.filter(
         (o) => o.perspective === p && o.component === t,
       );
-      if (a.length !== 9 || a.filter((o) => o.correct).length !== 3)
-        errors.push(`${p}/${t}: require 9 options, 3 correct, 6 distractors`);
+      if (a.length !== 8 || a.filter((o) => o.correct).length !== 3)
+        errors.push(`${p}/${t}: require 8 options, 3 correct, 5 distractors`);
     }
   for (const o of c.options) {
     if (o.correct) {
@@ -150,11 +151,14 @@ export function validateContent(raw: unknown): Content {
     )
       errors.push(`${calc.id}: invalid inputs/chain`); // Formulas are displayed, never evaluated as code.
     const v = Object.values(calc.inputs);
-    const expected = calc.id.startsWith("F-")
-      ? (v[0] / ((v[1] + v[2]) / 2)) * 100
-      : calc.id.startsWith("P-")
-        ? v[0] * (1 - v[1])
-        : (v[0] / v[1]) * 100;
+    const expected =
+      calc.kind === "difference"
+        ? v[0] - v[1]
+        : calc.id.startsWith("F-")
+          ? (v[0] / ((v[1] + v[2]) / 2)) * 100
+          : calc.id.startsWith("P-")
+            ? v[0] * (1 - v[1])
+            : (v[0] / v[1]) * 100;
     if (
       !Number.isFinite(expected) ||
       Math.abs(expected - calc.expected) > calc.tolerance

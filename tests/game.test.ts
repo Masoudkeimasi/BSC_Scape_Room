@@ -296,10 +296,10 @@ describe("sequential mission and protected transitions", () => {
   });
 });
 describe("authoritative content import", () => {
-  it("validates all 144 supplied options, 48 correct, 96 distractors and 12 chains", () => {
-    expect(c.options).toHaveLength(144);
+  it("validates all 128 supplied options, 48 correct, 80 distractors and 12 chains", () => {
+    expect(c.options).toHaveLength(128);
     expect(c.options.filter((o) => o.correct)).toHaveLength(48);
-    expect(c.options.filter((o) => !o.correct)).toHaveLength(96);
+    expect(c.options.filter((o) => !o.correct)).toHaveLength(80);
     expect(c.theory.length).toBeGreaterThanOrEqual(30);
   });
   it("rejects duplicate IDs", () => {
@@ -310,7 +310,7 @@ describe("authoritative content import", () => {
   it("rejects incomplete or smaller sample banks", () =>
     expect(() =>
       validateContent({ ...c, options: c.options.slice(0, 100) }),
-    ).toThrow("144"));
+    ).toThrow("128"));
   it("rejects missing instructor explanations", () => {
     const raw = structuredClone(c);
     raw.options[8].explanation = "";
@@ -330,4 +330,70 @@ describe("authoritative content import", () => {
     expect(
       c.options.filter((o) => o.component === "T").every((o) => !!o.evidence),
     ).toBe(true));
+});
+
+describe("revised 128-option instructor matrix", () => {
+  it("has exactly eight options, three correct and five incorrect in every perspective/component group", () => {
+    for (const p of ["F", "C", "P", "L"])
+      for (const component of ["O", "M", "T", "I"]) {
+        const options = c.options.filter(
+          (o) => o.perspective === p && o.component === component,
+        );
+        expect(options).toHaveLength(8);
+        expect(options.filter((o) => o.correct)).toHaveLength(3);
+        expect(options.filter((o) => !o.correct)).toHaveLength(5);
+      }
+    expect(c.options.some((o) => o.id.endsWith("9"))).toBe(false);
+  });
+  it("uses the revised Learning & Growth mappings and links its calculation to L2 only", () => {
+    expect(c.options.find((o) => o.id === "L-O1")!.text).toContain(
+      "external R&D partners",
+    );
+    expect(c.options.find((o) => o.id === "L-O2")!.text).toContain(
+      "food product innovation",
+    );
+    expect(
+      c.options.find((o) => o.id === "L-T1")!.calculationId,
+    ).toBeUndefined();
+    expect(c.options.find((o) => o.id === "L-T2")!.calculationId).toBe(
+      "L-baseline",
+    );
+    expect(c.calculations.find((x) => x.id === "L-baseline")).toMatchObject({
+      chainId: "L2",
+      kind: "difference",
+      expected: 50,
+      unit: "percentage points",
+    });
+  });
+  it("uses the supplied annual-review forecast rather than the retired ROA scenario", () => {
+    expect(
+      Object.values(c.calculations.find((x) => x.id === "F-baseline")!.inputs),
+    ).toEqual([1948, 24000, 24700]);
+  });
+  it("validates the required fifty-percentage-point improvement for the revised L2 chain", () => {
+    const p = until(5);
+    const wrong = act(p, {
+      type: "calculate",
+      room: 5,
+      calculationId: "L-baseline",
+      value: 166.67,
+    });
+    expect(wrong.rooms[5].calculationErrors).toBe(1);
+    expect(wrong.rooms[5].mistakes).toBe(0);
+    const correct = act(wrong, {
+      type: "calculate",
+      room: 5,
+      calculationId: "L-baseline",
+      value: 50,
+    });
+    expect(correct.rooms[5].calculations["L-baseline"]).toBe(50);
+  });
+  it("rejects a legacy ninth option even when all other options are unchanged", () => {
+    const old = structuredClone(c);
+    old.options.push({
+      ...old.options.find((o) => o.id === "F-O8")!,
+      id: "F-O9",
+    });
+    expect(() => validateContent(old)).toThrow("128");
+  });
 });

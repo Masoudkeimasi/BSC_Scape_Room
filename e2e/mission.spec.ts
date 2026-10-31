@@ -69,6 +69,7 @@ test("complete six rooms through progressive boards, map, assessment and PDF", a
         "Initiatives",
       ].entries()) {
         await page.getByRole("tab", { name: new RegExp(`^${tab}`) }).click();
+        await expect(page.locator(".option-select")).toHaveCount(8);
         const option = bank.options.find((o) => o.id === chain.options[i])!;
         await page
           .locator(".option-select")
@@ -195,12 +196,14 @@ test("instructor authorisation, complete import validation and anonymised export
     page.getByRole("heading", { name: "Your complete teaching bank." }),
   ).toBeVisible();
   const exported = await (await page.request.get("/api/instructor")).json();
-  expect(exported.content.options).toHaveLength(144);
+  expect(exported.content.options).toHaveLength(128);
   expect(
-    exported.content.options.some((o: { explanation: string }) =>
-      o.explanation.includes("CORRECT"),
-    ),
-  ).toBe(true);
+    exported.content.options.find((o: { id: string }) => o.id === "F-O1"),
+  ).toMatchObject({
+    correct: true,
+    chainId: "F1",
+    explanation: expect.stringContaining("Supplied 128-option matrix"),
+  });
   const invalid = {
     ...exported.content,
     options: exported.content.options.slice(0, 100),
@@ -210,7 +213,7 @@ test("instructor authorisation, complete import validation and anonymised export
     data: { type: "import", content: invalid },
   });
   expect(response.status()).toBe(400);
-  expect((await response.json()).error).toContain("144");
+  expect((await response.json()).error).toContain("128");
   const downloadPromise = page.waitForEvent("download");
   await page
     .getByRole("button", { name: "Anonymised CSV", exact: true })
@@ -305,4 +308,41 @@ test("drag and drop rejects wrong component types without consuming mistakes", a
     page.locator(".active-row .drop-zone").nth(1).locator("p"),
   ).toHaveCount(1);
   await expect(page.getByText("MISTAKES 0/3", { exact: true })).toBeVisible();
+});
+
+test("a saved mission from the previous bank offers an explicit anonymous restart", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(
+    page.getByRole("button", { name: "Start Mission", exact: true }),
+  ).toBeEnabled();
+  const initial = await (await page.request.get("/api/game")).json();
+  const { writeFile, mkdir } = await import("node:fs/promises");
+  const path = await import("node:path");
+  const directory = path.join(process.cwd(), ".data", "e2e");
+  await mkdir(directory, { recursive: true });
+  await writeFile(
+    path.join(directory, `progress-${initial.progress.id}.json`),
+    JSON.stringify({
+      ...initial.progress,
+      contentVersion: "old-144-option-bank",
+    }),
+  );
+  await page.goto("/mission");
+  await expect(
+    page.getByRole("button", {
+      name: "Start updated demo mission",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Start updated demo mission", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Your strategy, taking shape." }),
+  ).toBeVisible();
+  const updated = await (await page.request.get("/api/game")).json();
+  expect(updated.progress.completed).toEqual([]);
+  expect(updated.progress.contentVersion).toBe(initial.progress.contentVersion);
 });

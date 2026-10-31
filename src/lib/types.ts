@@ -18,6 +18,7 @@ export type Option = {
 };
 export type Chain = { id: string; perspective: Perspective; options: string[] };
 export type Calculation = {
+  kind?: "difference";
   id: string;
   chainId: string;
   title: string;

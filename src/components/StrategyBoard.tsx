@@ -274,8 +274,8 @@ export function StrategyBoard({
               ))}
             </div>
             <p className="data-note">
-              {calc.id === "P-baseline"
-                ? "Supplied review’s fictional 2022 baseline."
+              {calc.id !== "C-baseline"
+                ? "Figures from the supplied fictional annual review or revised instructor matrix."
                 : "Supplementary instructor-key exercise. These inputs are separate from the review’s 2025 financial statements."}
             </p>
             {calc.id in state.calculations ? (
@@ -348,7 +348,7 @@ export function StrategyBoard({
                 <div className="eyebrow gold">YOUR EVIDENCE BANK</div>
                 <h3>Choose with purpose.</h3>
               </div>
-              <span className="muted">9 options per component</span>
+              <span className="muted">8 options per component</span>
             </div>
             <div role="tablist" aria-label="Option banks" className="bank-tabs">
               {components.map((t) => (
@@ -361,7 +361,7 @@ export function StrategyBoard({
                   onClick={() => setTab(t)}
                   className={tab === t ? "active" : ""}
                 >
-                  {labels[t]}s <span>09</span>
+                  {labels[t]}s <span>08</span>
                 </button>
               ))}
             </div>

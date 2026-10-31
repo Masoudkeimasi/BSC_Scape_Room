@@ -422,6 +422,21 @@ export function GameApp({
               </button>
             </div>
           )}
+          {error.includes("Course content changed") && (
+            <section className="panel">
+              <p>
+                The revised option bank needs a new mission. Anonymous players
+                can restart below. Authenticated progress requires an instructor
+                reset.
+              </p>
+              <Button
+                disabled={busy}
+                onClick={() => act({ type: "new", name })}
+              >
+                Start updated demo mission
+              </Button>
+            </section>
+          )}
           {!state && !error && (
             <div className="loading">Establishing secure vault connection…</div>
           )}
@@ -706,12 +721,10 @@ export function GameApp({
                   <div style={{ height: 220 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart
-                        data={rooms
-                          .slice(1, 5)
-                          .map((r, i) => ({
-                            name: r.label,
-                            value: p.rooms[i + 2].rows.length,
-                          }))}
+                        data={rooms.slice(1, 5).map((r, i) => ({
+                          name: r.label,
+                          value: p.rooms[i + 2].rows.length,
+                        }))}
                       >
                         <XAxis
                           dataKey="name"

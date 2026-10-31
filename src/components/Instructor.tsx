@@ -198,7 +198,7 @@ export function Instructor() {
                 The current complete bank is the exact import template. Edit
                 options, explanations, mappings, calculations, vision,
                 questions, review sections and causalLinks here. Import is
-                atomic: all 144 options must pass validation before anything is
+                atomic: all 128 options must pass validation before anything is
                 saved. Export contains confidential answers; store securely.
               </p>
               <label className="upload-button">
