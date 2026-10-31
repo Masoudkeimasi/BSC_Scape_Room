@@ -96,6 +96,7 @@ export function StrategyMapPuzzle({
   busy,
   act,
   storageKey,
+  preview = false,
 }: {
   image: string | null;
   saved?: number[];
@@ -103,6 +104,7 @@ export function StrategyMapPuzzle({
   busy: boolean;
   act: (a: Action) => Promise<boolean>;
   storageKey: string;
+  preview?: boolean;
 }) {
   const [draft, setDraft] = useLocalDraft<number[]>(storageKey, saved ?? []);
   const [selected, setSelected] = useState<number | null>(null);
@@ -193,8 +195,10 @@ export function StrategyMapPuzzle({
               {done ? (
                 <>
                   <p className="confirmed">
-                    <Check size={18} /> Strategy Map reconstructed. The
-                    Knowledge Vault is now unlocked.
+                    <Check size={18} />{" "}
+                    {preview
+                      ? "Preview complete. Student progress has not changed."
+                      : "Strategy Map reconstructed. The Knowledge Vault is now unlocked."}
                   </p>
                   <img
                     className="completed-strategy-map"

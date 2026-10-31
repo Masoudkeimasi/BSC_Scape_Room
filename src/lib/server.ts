@@ -153,6 +153,7 @@ export async function instructor() {
     equal(sign(`instructor:${expires}`), sig)
   )
     return true;
+  if (!jar.get("pf-auth")?.value) return false;
   try {
     const i = await identity();
     return i.authenticated && i.role === "instructor";

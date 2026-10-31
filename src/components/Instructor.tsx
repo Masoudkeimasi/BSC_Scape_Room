@@ -28,6 +28,13 @@ export function Instructor() {
     const r = await fetch("/api/instructor");
     const d = await r.json();
     if (!r.ok) throw new Error(d.error);
+    if (
+      new URLSearchParams(window.location.search).get("preview") ===
+      "strategy-map"
+    ) {
+      window.location.assign("/instructor/preview/strategy-map");
+      return;
+    }
     setData(d);
     setEditor(JSON.stringify(d.content, null, 2));
   };
@@ -162,6 +169,20 @@ export function Instructor() {
               <ShieldCheck size={18} /> Instructor session verified. Answer
               mappings are only delivered to authorised instructor requests.
             </div>
+            <section className="panel">
+              <div className="eyebrow gold">TEACHING TOOLS</div>
+              <h2>Preview the Strategy Map Vault.</h2>
+              <p className="muted">
+                Try the 16-piece puzzle immediately without completing earlier
+                vaults. Preview activity does not affect student progress or
+                scores.
+              </p>
+              <Button asChild>
+                <Link href="/instructor/preview/strategy-map">
+                  Preview Strategy Map Vault
+                </Link>
+              </Button>
+            </section>
             <div className="dashboard-stats">
               <div className="panel">
                 <span>PARTICIPANTS</span>

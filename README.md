@@ -144,3 +144,11 @@ Six original photographs from the user's `page 6.zip` are served locally from `p
 The source image was supplied in `Perspolis_Strategy_Map.zip`. It is copied unchanged to `public/images/strategy-map.png`; `docs/strategy-map-image.json` records its dimensions and checksum. CSS renders the sixteen fragments without recompressing or modifying the image. Incorrect picture checks preserve all earlier completed vaults. Puzzle drafts persist locally and successful completion is checked on the server; completed puzzles are read-only. The image is a public educational asset, so this visual exercise is not a secure standalone summative assessment.
 
 The mission-format version changes with this update. Old six-room anonymous missions must use the explicit restart control, and authenticated sessions require an instructor reset. Certificates and dashboards now report seven completed vaults.
+
+## Preview the puzzle without completing other vaults
+
+Open `/instructor`, sign in, and select **Preview Strategy Map Vault**. You can also open `/instructor/preview/strategy-map` directly; it redirects to instructor sign-in and returns to the preview after successful login. Existing Supabase instructor sessions are supported through **Use existing instructor session**.
+
+The preview uses the same picture-puzzle component with an isolated test board. **Shuffle and restart preview** creates a fresh puzzle; **Reveal completed map (preview)** displays the solved image immediately. Neither action changes any student progress, unlocks mission vaults, awards points, records assessment results or enables certificates. The preview page and every preview API action verify instructor authorisation on the server, and POST requests require a same-origin header.
+
+If instructor access is not configured on Vercel, open **Project → Settings → Environment Variables**, add a strong private `INSTRUCTOR_PASSWORD` and a random stable `SESSION_SECRET`, and redeploy. Do not enter those values in chat or commit them to Git. These settings require no local Node.js installation. Alternatively use the existing Supabase instructor role described above.

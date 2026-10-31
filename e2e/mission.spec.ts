@@ -483,3 +483,89 @@ test("designer credits, distinct room palettes and readable panel contrast", asy
     ),
   ).toBe(true);
 });
+
+test("instructor preview is protected and never changes student progress", async ({
+  page,
+}) => {
+  const url = "/instructor/preview/strategy-map";
+  const denied = await page.request.post("/api/instructor/preview", {
+    headers: { Origin: "http://localhost:3100" },
+    data: { type: "puzzle-start" },
+  });
+  expect(denied.status()).toBe(403);
+  await page.goto(url);
+  await expect(page).toHaveURL(/\/instructor\?preview=strategy-map/);
+  await expect(
+    page.getByRole("heading", { name: "Authorised access only." }),
+  ).toBeVisible();
+  const before = await (await page.request.get("/api/game")).json();
+  expect(before.progress.completed).toEqual([]);
+  await page
+    .getByLabel("Instructor password", { exact: true })
+    .fill("e2e-only-instructor-password");
+  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await expect(page).toHaveURL(url);
+  await expect(
+    page.getByRole("heading", { name: "Test the puzzle directly." }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Begin Strategy Map Puzzle", exact: true })
+    .click();
+  await expect(page.locator(".puzzle-piece")).toHaveCount(16);
+  const invalid = await page.request.post("/api/instructor/preview", {
+    headers: { Origin: "http://localhost:3100" },
+    data: { type: "puzzle-submit", order: Array(16).fill(0) },
+  });
+  expect(invalid.status()).toBe(400);
+  const foreign = await page.request.post("/api/instructor/preview", {
+    headers: { Origin: "https://attacker.example" },
+    data: { type: "puzzle-start" },
+  });
+  expect(foreign.status()).toBe(400);
+  const noOrigin = await page.request.post("/api/instructor/preview", {
+    data: { type: "puzzle-start" },
+  });
+  expect(noOrigin.status()).toBe(400);
+  const wrong = await page.request.post("/api/instructor/preview", {
+    headers: { Origin: "http://localhost:3100" },
+    data: {
+      type: "puzzle-submit",
+      order: Array.from({ length: 16 }, (_, i) => 15 - i),
+    },
+  });
+  expect((await wrong.json()).correct).toBe(false);
+  await page
+    .getByRole("button", {
+      name: "Reveal completed map (preview)",
+      exact: true,
+    })
+    .click();
+  await expect(page.locator(".completed-strategy-map")).toBeVisible();
+  await expect(
+    page.getByText("Preview complete. Student progress has not changed.", {
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "ENTER NEXT ROOM" })).toHaveCount(
+    0,
+  );
+  const after = await (await page.request.get("/api/game")).json();
+  expect(after.progress).toEqual(before.progress);
+  expect((await page.request.get("/api/certificate")).status()).toBe(403);
+  await page.goto("/room/6");
+  await expect(
+    page.getByRole("heading", { name: "Vault access restricted." }),
+  ).toBeVisible();
+  await page.goto("/instructor");
+  await page
+    .getByRole("button", { name: "Use existing instructor session" })
+    .click();
+  await page
+    .getByRole("link", { name: "Preview Strategy Map Vault", exact: true })
+    .click();
+  await expect(page).toHaveURL(url);
+  await page
+    .getByRole("button", { name: "Shuffle and restart preview", exact: true })
+    .click();
+  await expect(page.locator(".puzzle-piece")).toHaveCount(16);
+});
