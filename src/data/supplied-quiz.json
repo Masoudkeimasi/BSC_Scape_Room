@@ -1,0 +1,115 @@
+[
+  {
+    "id": "approved-q1",
+    "type": "mcq",
+    "prompt": "What is the principal purpose of the Balanced Scorecard?",
+    "choices": [
+      "Replace financial reporting entirely",
+      "Translate strategy into an integrated set of objectives and performance measures",
+      "Measure employee productivity only",
+      "Monitor short-term profit exclusively"
+    ],
+    "answers": [
+      "Translate strategy into an integrated set of objectives and performance measures"
+    ],
+    "explanation": "Marking guidance from supplied Knowledge Vault assessment."
+  },
+  {
+    "id": "approved-q2",
+    "type": "boolean",
+    "prompt": "The traditional Balanced Scorecard includes financial, customer, internal process, and learning and growth perspectives.",
+    "choices": ["True", "False"],
+    "answers": ["True"],
+    "explanation": "Marking guidance from supplied Knowledge Vault assessment."
+  },
+  {
+    "id": "approved-q3",
+    "type": "blank",
+    "prompt": "Complete the statement: A strategy map makes the ______ relationships between strategic objectives visible.",
+    "choices": [],
+    "answers": ["cause-and-effect", "causal", "cause and effect"],
+    "explanation": "Marking guidance from supplied Knowledge Vault assessment."
+  },
+  {
+    "id": "approved-q4",
+    "type": "mcq",
+    "prompt": "Which is the best example of a leading indicator?",
+    "choices": [
+      "Last year's operating profit",
+      "Annual dividend per share",
+      "Percentage of employees demonstrating new digital competencies",
+      "Last year's revenue"
+    ],
+    "answers": [
+      "Percentage of employees demonstrating new digital competencies"
+    ],
+    "explanation": "Marking guidance from supplied Knowledge Vault assessment."
+  },
+  {
+    "id": "approved-q5",
+    "type": "mcq",
+    "prompt": "Which perspective most directly addresses the capabilities and intangible assets needed to execute strategy?",
+    "choices": [
+      "Financial",
+      "Customer",
+      "Internal process",
+      "Learning and growth"
+    ],
+    "answers": ["Learning and growth"],
+    "explanation": "Marking guidance from supplied Knowledge Vault assessment."
+  },
+  {
+    "id": "approved-q6",
+    "type": "boolean",
+    "prompt": "A strategy map proves that improving employee skills will automatically increase profitability.",
+    "choices": ["True", "False"],
+    "answers": ["False"],
+    "explanation": "Marking guidance from supplied Knowledge Vault assessment."
+  },
+  {
+    "id": "approved-q7",
+    "type": "blank",
+    "prompt": "Complete the statement: A ______ is a quantified level of performance that an organisation intends to achieve.",
+    "choices": [],
+    "answers": ["target", "performance target"],
+    "explanation": "Marking guidance from supplied Knowledge Vault assessment."
+  },
+  {
+    "id": "approved-q8",
+    "type": "mcq",
+    "prompt": "Which is the strongest example of a strategically aligned initiative?",
+    "choices": [
+      "Increasing advertising regardless of the objective",
+      "Introducing predictive maintenance to improve equipment reliability",
+      "Reducing all training expenditure to improve learning",
+      "Selecting projects solely because competitors use them"
+    ],
+    "answers": [
+      "Introducing predictive maintenance to improve equipment reliability"
+    ],
+    "explanation": "Marking guidance from supplied Knowledge Vault assessment."
+  },
+  {
+    "id": "approved-q9",
+    "type": "boolean",
+    "prompt": "Financial measures alone are sufficient to explain the drivers of future organisational performance.",
+    "choices": ["True", "False"],
+    "answers": ["False"],
+    "explanation": "Marking guidance from supplied Knowledge Vault assessment."
+  },
+  {
+    "id": "approved-q10",
+    "type": "mcq",
+    "prompt": "Which sequence best represents a typical cause-and-effect hypothesis in a for-profit strategy map?",
+    "choices": [
+      "Financial results → customer loyalty → process quality → employee capabilities",
+      "Customer loyalty → dividends → employee capabilities → process quality",
+      "Employee capabilities → process improvement → customer value → financial results",
+      "Employee capabilities → financial results → process improvement → customer value"
+    ],
+    "answers": [
+      "Employee capabilities → process improvement → customer value → financial results"
+    ],
+    "explanation": "Marking guidance from supplied Knowledge Vault assessment."
+  }
+]

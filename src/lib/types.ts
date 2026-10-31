@@ -1,0 +1,99 @@
+export const perspectives = ["F", "C", "P", "L"] as const;
+export type Perspective = (typeof perspectives)[number];
+export const components = ["O", "M", "T", "I"] as const;
+export type Component = (typeof components)[number];
+export type Option = {
+  id: string;
+  perspective: Perspective;
+  component: Component;
+  text: string;
+  correct: boolean;
+  chainId: string | null;
+  primaryCategory: string | null;
+  secondaryCategories: string[];
+  explanation: string;
+  feedback: string;
+  evidence: string;
+  calculationId?: string;
+};
+export type Chain = { id: string; perspective: Perspective; options: string[] };
+export type Calculation = {
+  id: string;
+  chainId: string;
+  title: string;
+  formula: string;
+  inputs: Record<string, number>;
+  expected: number;
+  tolerance: number;
+  unit: string;
+};
+export type Theory = {
+  id: string;
+  type: "mcq" | "boolean" | "blank";
+  prompt: string;
+  choices: string[];
+  answers: string[];
+  explanation: string;
+};
+export type Settings = {
+  mistakeLimit: number;
+  passThreshold: number;
+  chainPoints: number;
+  cleanBonus: number;
+  calculationPoints: number;
+  assessmentPoints: number;
+};
+export type Content = {
+  settings?: Settings;
+  label: string;
+  approved: boolean;
+  options: Option[];
+  chains: Chain[];
+  calculations: Calculation[];
+  vision: { id: string; text: string; correct: boolean }[];
+  theory: Theory[];
+  causalLinks: string[];
+  review: { title: string; body: string; table?: string[][] }[];
+};
+export type Row = string[];
+export type RoomState = {
+  rows: Row[];
+  mistakes: number;
+  restarts: number;
+  incorrect: number;
+  calculations: Record<string, number>;
+  calculationErrors: number;
+  mapDone: boolean;
+  map?: {
+    placements: Record<string, string>;
+    links: string[];
+    explanation: string;
+  };
+  vision?: string[];
+};
+export type Attempt = { score: number; date: string; questions: string[] };
+export type Progress = {
+  id: string;
+  name: string;
+  completed: number[];
+  rooms: Record<number, RoomState>;
+  score: number;
+  attempts: Attempt[];
+  assessment?: { ids: string[]; choices: Record<string, string[]> };
+  finishedAt?: string;
+  certificateId?: string;
+  contentVersion?: string;
+  events: { room: number; optionIds: string[]; kind: string; date: string }[];
+};
+export type Action = {
+  type: string;
+  room?: number;
+  ids?: string[];
+  calculationId?: string;
+  value?: number;
+  answers?: Record<string, string>;
+  placements?: Record<string, string>;
+  links?: string[];
+  explanation?: string;
+  name?: string;
+};
