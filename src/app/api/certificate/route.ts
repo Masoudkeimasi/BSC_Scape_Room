@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { jsPDF } from "jspdf";
+import { designCredit } from "@/lib/page-themes";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { content, identity, readProgress } from "@/lib/server";
@@ -75,6 +76,8 @@ export async function GET() {
       183,
       { align: "center" },
     );
+    pdf.setFontSize(9);
+    pdf.text(designCredit, 148, 192, { align: "center" });
     return new NextResponse(pdf.output("arraybuffer"), {
       headers: {
         "Content-Type": "application/pdf",

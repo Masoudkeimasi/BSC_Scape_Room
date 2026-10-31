@@ -166,6 +166,9 @@ test("complete six rooms through progressive boards, map, assessment and PDF", a
   await expect(
     page.getByRole("heading", { name: "YOU ARE FREE!", exact: true }),
   ).toBeVisible();
+  await expect(page.locator(".completion-credit")).toHaveText(
+    "Designed by Dr Masoud Keimasi for teaching purposes.",
+  );
   const pdf = await page.request.get("/api/certificate");
   expect(pdf.status()).toBe(200);
   expect(pdf.headers()["content-type"]).toContain("application/pdf");
@@ -345,4 +348,63 @@ test("a saved mission from the previous bank offers an explicit anonymous restar
   const updated = await (await page.request.get("/api/game")).json();
   expect(updated.progress.completed).toEqual([]);
   expect(updated.progress.contentVersion).toBe(initial.progress.contentVersion);
+});
+
+test("designer credits, distinct room palettes and readable panel contrast", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator(".opening-credit")).toHaveText(
+    "Designed by Dr Masoud Keimasi for teaching purposes.",
+  );
+  await expect(page.locator(".footer-credit")).toContainText(
+    "Dr Masoud Keimasi",
+  );
+  const accents = new Set<string>();
+  for (let room = 1; room <= 6; room++) {
+    await page.goto(`/room/${room}`);
+    await expect(page.locator(".app-shell")).toHaveAttribute(
+      "data-page",
+      `room-${room}`,
+    );
+    await expect(page.locator(".panel").first()).toBeVisible();
+    const sample = await page
+      .locator(".panel")
+      .first()
+      .evaluate((el) => {
+        const style = getComputedStyle(el);
+        return {
+          accent: getComputedStyle(document.querySelector(".app-shell")!)
+            .getPropertyValue("--page-accent")
+            .trim(),
+          text: getComputedStyle(el.querySelector("p") ?? el).color,
+          background: style.backgroundColor,
+        };
+      });
+    accents.add(sample.accent);
+    const luminance = (color: string) => {
+      const channels = color
+        .match(/[\d.]+/g)!
+        .slice(0, 3)
+        .map(Number)
+        .map((n) => {
+          const v = n / 255;
+          return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+        });
+      return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+    };
+    const [a, b] = [luminance(sample.text), luminance(sample.background)];
+    expect(
+      (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05),
+    ).toBeGreaterThanOrEqual(7);
+  }
+  expect(accents.size).toBe(6);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await expect(page.locator(".opening-credit")).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
 });

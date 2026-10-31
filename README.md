@@ -124,3 +124,9 @@ Run `npm ci && npm run build`, then `npm start` behind an HTTPS reverse proxy. P
 - `supabase/schema.sql`: private tables and atomic progress RPC.
 
 Accessibility includes click alternatives to dragging, keyboard drag support, labelled controls, live feedback, visible focus, text statuses, reduced-motion support, a map text alternative and no mandatory timer. Manual assistive-technology testing remains advisable. The included DejaVu font license is in `public/fonts/LICENSE-DejaVu.txt`.
+
+## Visual identity and design credit
+
+Each room uses a distinct sapphire, gold, cyan, emerald, amethyst or copper palette. Text and option cards use larger type, opaque surfaces and stronger contrast. The opening screen, completion screen, footer and PDF certificate credit **Dr Masoud Keimasi** as the game designer for teaching purposes.
+
+Photographs are configured in `src/lib/page-themes.ts`; each room can use one local image in `public/images/`. The six inline photo references were visible in chat but their original files were not available to download. Consequently no substitute or unverified remote image is currently embedded. See `docs/room-photographs.md` for the intended mapping. Wikimedia sourcing is pending access to `commons.wikimedia.org` and `upload.wikimedia.org` through the environment's supported network settings. Keep any required photographer/source/license attribution when adding sourced images.

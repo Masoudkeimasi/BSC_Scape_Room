@@ -11,6 +11,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { Brand } from "./GameApp";
+import { pageThemes, themeStyle, designCredit } from "@/lib/page-themes";
 import { Button } from "./ui/button";
 import { Content, Progress } from "@/lib/types";
 export function Instructor() {
@@ -91,7 +92,11 @@ export function Instructor() {
     );
   };
   return (
-    <div className="instructor-shell">
+    <div
+      className="instructor-shell"
+      data-page="instructor"
+      style={themeStyle(pageThemes.instructor)}
+    >
       <header>
         <Brand />
         <Link href="/">
@@ -412,6 +417,7 @@ export function Instructor() {
           accounts for assessed cohorts. Content changes invalidate active
           sessions; perform an authorised reset after changing a course.
         </p>
+        <p className="designer-credit footer-credit">{designCredit}</p>
       </main>
     </div>
   );

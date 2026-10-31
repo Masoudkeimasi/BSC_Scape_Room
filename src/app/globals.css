@@ -2078,3 +2078,427 @@ td {
   z-index: 25;
   box-shadow: 0 10px 22px #0006;
 }
+
+/* Distinct page palettes; content surfaces stay opaque over optional photographs. */
+.app-shell,
+.instructor-shell {
+  --gold: var(--page-accent, #a6efd9);
+  --muted: #c0cdd6;
+  --border: #567080;
+  color: #f6f8fc;
+  background: var(--page-base, #071d21);
+  min-height: 100vh;
+}
+.main-shell {
+  background-image:
+    linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--page-base) 96%, transparent),
+      color-mix(in srgb, var(--page-base) 72%, transparent)
+    ),
+    var(--page-photo, none);
+  background-position: center top;
+  background-size: cover;
+  background-attachment: fixed;
+}
+.app-shell .sidebar,
+.app-shell .topbar {
+  background: color-mix(in srgb, var(--page-base) 78%, #08111c);
+  border-color: color-mix(in srgb, var(--page-accent) 35%, #263b4b);
+}
+.app-shell .topbar {
+  border-top: 3px solid var(--page-accent);
+}
+.panel,
+.room-card,
+.option-card,
+.drop-zone,
+.vision-card,
+.choice,
+.document,
+.option-bank {
+  color: #f6f8fc;
+  background: var(--page-surface, #17313b);
+  border-color: color-mix(in srgb, var(--page-accent) 38%, #536875);
+}
+.panel p,
+.room-card p,
+.hero-description,
+.hero-meta,
+.muted,
+.document-text,
+.data-note,
+.selection-notice,
+.validate-bar > span,
+.drop-placeholder,
+.calc-inputs span,
+.review-nav button,
+.nav,
+.room-nav-item,
+.room-nav-item.locked {
+  color: #c5d2dc;
+}
+.hero-description {
+  font-size: 14px;
+  line-height: 1.85;
+  max-width: 440px;
+}
+.hero-subtitle {
+  font-size: 17px;
+  color: #f3f7fa;
+}
+.page-kicker,
+.eyebrow,
+.side-title,
+.workspace-label,
+.card-bottom,
+.status,
+.drop-label {
+  font-size: 11px;
+}
+.hero .eyebrow {
+  font-size: 11px;
+}
+.room-card p,
+.card-top .eyebrow,
+.room-card .status,
+.selection-notice,
+.data-note,
+.validate-bar > span,
+.drop-placeholder,
+.drop-placeholder small {
+  font-size: 12px;
+}
+.room-card h3 {
+  font-size: 21px;
+}
+.room-card {
+  min-height: 255px;
+}
+.card-bottom {
+  font-size: 10px;
+  color: #c5d2dc;
+}
+.eyebrow.gold,
+.gold,
+.page-kicker,
+.chain-progress,
+.confirmed {
+  color: var(--page-accent, #a6efd9);
+}
+.room-heading {
+  padding: 26px;
+  min-height: 185px;
+  border: 1px solid color-mix(in srgb, var(--page-accent) 50%, #364c5a);
+  border-left: 5px solid var(--page-accent);
+  border-radius: 9px;
+  background: linear-gradient(
+    110deg,
+    var(--page-surface),
+    color-mix(in srgb, var(--page-surface) 82%, transparent)
+  );
+  box-shadow: 0 15px 40px #0003;
+}
+.room-toolbar {
+  border-color: #6b8494;
+  color: #e1ebf2;
+  font-size: 11px;
+}
+.strategy-row,
+.active-row {
+  background: var(--page-surface);
+  border-color: var(--page-accent);
+}
+.row-title {
+  font-size: 10px;
+  color: #eff8ff;
+  background: color-mix(in srgb, var(--page-accent) 15%, var(--page-base));
+}
+.drop-zone p,
+.option-select {
+  font-size: 14px;
+  line-height: 1.7;
+}
+.drop-zone {
+  min-height: 190px;
+}
+.option-select small {
+  font-size: 9px;
+  color: #c4d4dc;
+  letter-spacing: 0.5px;
+}
+.option-card.used {
+  opacity: 1;
+  background: color-mix(in srgb, var(--page-base) 90%, #747d83);
+  border-color: #788b94;
+}
+.option-card.used .option-select {
+  color: #aebdc7;
+}
+.option-card.used .option-select small {
+  color: #c5d5dd;
+}
+.option-card.used button:disabled {
+  opacity: 1;
+}
+.locked-row,
+.locked-row .drop-zone {
+  background: color-mix(in srgb, var(--page-base) 78%, #294a40);
+  border-color: #779c91;
+}
+.locked-row .row-title {
+  color: #d8efe6;
+}
+.drop-zone.over,
+.vision-card.chosen,
+.choice:has(:checked),
+.option-card.in-row {
+  background: color-mix(in srgb, var(--page-accent) 18%, var(--page-base));
+  border-color: var(--page-accent);
+  box-shadow: inset 0 0 0 1px var(--page-accent);
+}
+.button.primary {
+  background: var(--page-accent, #b5e5d8);
+  border-color: var(--page-accent, #b5e5d8);
+  color: #111b26;
+  font-size: 12px;
+}
+.button.primary:hover {
+  background: color-mix(in srgb, var(--page-accent) 80%, white);
+}
+.button.outline {
+  color: #f4f8fc;
+  border-color: #a1b5c1;
+  font-size: 12px;
+}
+.bank-tabs button {
+  font-size: 13px;
+  color: #d0dce5;
+}
+.bank-tabs button.active {
+  color: var(--page-accent);
+  border-color: var(--page-accent);
+}
+.bank-tabs button span {
+  font-size: 11px;
+}
+input,
+select,
+textarea {
+  background: #0b1926;
+  color: #f9fbff;
+  border-color: #7d97a9;
+  font-size: 14px;
+}
+input::placeholder,
+textarea::placeholder {
+  color: #bacbd8;
+  opacity: 1;
+}
+label {
+  color: #e0e9f0;
+  font-size: 13px;
+}
+.vision-card,
+.choice,
+.document-text,
+.question legend {
+  font-size: 15px;
+  line-height: 1.8;
+}
+.document-text {
+  color: #e0e8ee;
+}
+td,
+th {
+  font-size: 13px;
+  color: #e3ebf2;
+  border-color: #607987;
+}
+th {
+  background: color-mix(in srgb, var(--page-accent) 16%, #142634);
+  color: #fff;
+}
+.review-nav button.active,
+.nav.active,
+.room-nav-item.selected {
+  background: color-mix(in srgb, var(--page-accent) 15%, var(--page-base));
+  color: #fff;
+}
+.room-nav-item {
+  font-size: 12px;
+}
+.sidebar-bottom p,
+.instructor-link {
+  color: #c0d0da;
+}
+.hero h1 > span {
+  color: var(--page-accent);
+}
+.stat-strip span {
+  color: #cfdae3;
+  font-size: 9px;
+}
+.stat-strip strong {
+  color: var(--page-accent);
+}
+.briefing-panel {
+  background: var(--page-surface);
+  border-color: #67818e;
+}
+.briefing-panel p {
+  font-size: 13px;
+  color: #d5e0e9;
+}
+.completion h2 {
+  color: var(--page-accent);
+}
+.designer-credit {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #f6f8fc;
+  letter-spacing: 0.1px;
+}
+.opening-credit {
+  display: inline-block;
+  padding: 10px 14px;
+  margin: 0 0 22px;
+  border: 1px solid color-mix(in srgb, var(--page-accent) 60%, #546773);
+  border-left: 3px solid var(--page-accent);
+  background: var(--page-surface);
+  border-radius: 4px;
+}
+.completion .completion-credit {
+  color: #fff;
+  font-size: 16px;
+  border-bottom: 1px solid #78909f;
+  padding-bottom: 16px;
+}
+.footer-credit {
+  margin-top: 38px;
+  padding: 18px 0 0;
+  border-top: 1px solid #718997;
+  color: #e6edf3;
+}
+footer {
+  margin-top: 18px;
+  color: #c3d3de;
+  font-size: 9px;
+}
+footer > span:nth-child(2) {
+  color: #c3d3de;
+}
+@media (max-width: 600px) {
+  .main-shell {
+    background-attachment: scroll;
+  }
+  .room-heading {
+    padding: 20px;
+    min-height: 180px;
+  }
+  .hero-description {
+    font-size: 14px;
+  }
+  .hero-subtitle {
+    font-size: 16px;
+  }
+  .opening-credit {
+    font-size: 13px;
+  }
+  .room-grid {
+    grid-template-columns: 1fr;
+  }
+  .room-card {
+    min-height: 220px;
+    padding: 20px 20px 0;
+  }
+  .room-card h3 {
+    font-size: 23px;
+    min-height: 0;
+  }
+  .room-card p {
+    font-size: 14px;
+    min-height: 0;
+  }
+  .card-top .eyebrow,
+  .room-card .status {
+    font-size: 10px;
+  }
+  .card-bottom {
+    font-size: 10px;
+  }
+  .drop-zone p {
+    font-size: 13px;
+  }
+  .option-select {
+    font-size: 14px;
+  }
+  .drop-grid {
+    gap: 8px;
+  }
+  .drop-zone {
+    min-height: 190px;
+    padding: 12px 9px;
+  }
+  .active-row {
+    position: relative;
+    top: auto;
+  }
+  .validate-bar .button {
+    white-space: normal;
+    font-size: 12px;
+  }
+  .bank-tabs {
+    gap: 7px;
+  }
+  .bank-tabs button {
+    font-size: 11px;
+  }
+  .bank-tabs button span {
+    font-size: 10px;
+    margin-left: 4px;
+  }
+  .room-toolbar {
+    font-size: 9px;
+  }
+  .hero-meta {
+    font-size: 10px;
+    flex-wrap: wrap;
+  }
+  .briefing-panel p {
+    font-size: 13px;
+  }
+  .page-kicker {
+    font-size: 10px;
+  }
+  .stat-strip span {
+    font-size: 8px;
+  }
+  .completion .button {
+    font-size: 12px;
+  }
+}
+.room-heading {
+  background-image:
+    linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--page-surface) 98%, transparent),
+      color-mix(in srgb, var(--page-surface) 58%, transparent)
+    ),
+    var(--page-photo, none);
+  background-position: center;
+  background-size: cover;
+}
+.workspace-label {
+  white-space: normal;
+  font-size: 10px;
+  line-height: 1.7;
+}
+.room-nav-item > span:nth-child(2) {
+  min-width: 0;
+  flex: 1;
+  line-height: 1.5;
+}
+.room-nav-item .room-number {
+  flex-shrink: 0;
+}

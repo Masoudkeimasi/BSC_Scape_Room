@@ -39,6 +39,7 @@ import {
   Theory,
 } from "@/lib/types";
 import { unlocked } from "@/lib/game-engine";
+import { pageThemes, themeStyle, designCredit } from "@/lib/page-themes";
 import { StrategyBoard } from "./StrategyBoard";
 import { StrategyMapBuilder } from "./StrategyMapBuilder";
 import { Review } from "./Review";
@@ -56,42 +57,42 @@ export const rooms = [
     label: "STRATEGIC DIRECTION",
     description: "Find the purpose. Set the direction.",
     icon: Compass,
-    color: "#c8ad75",
+    color: "#a9ceff",
   },
   {
     name: "Financial Boardroom",
     label: "FINANCIAL",
     description: "Turn ambition into sustainable value.",
     icon: ChartNoAxesCombined,
-    color: "#d7b36c",
+    color: "#ffe0a1",
   },
   {
     name: "Customer Intelligence Lab",
     label: "CUSTOMER",
     description: "Decode what your customers value.",
     icon: Users,
-    color: "#5abde0",
+    color: "#91eaff",
   },
   {
     name: "Operations Control Centre",
     label: "INTERNAL PROCESS",
     description: "Build the engine behind the promise.",
     icon: Factory,
-    color: "#6fbea0",
+    color: "#9df0c5",
   },
   {
     name: "Innovation Academy",
     label: "LEARNING & GROWTH",
     description: "Connect capabilities to performance.",
     icon: Lightbulb,
-    color: "#ab9adc",
+    color: "#dcc2ff",
   },
   {
     name: "Knowledge Vault",
     label: "KAPLAN & NORTON",
     description: "Prove your understanding. Find the exit.",
     icon: KeyRound,
-    color: "#d99976",
+    color: "#ffc4ad",
   },
 ];
 export type PublicContent = {
@@ -298,8 +299,10 @@ export function GameApp({
   const done = p?.completed.includes(room);
   const roomState = p?.rooms[room];
   const allowed = p ? unlocked(p, room) : false;
+  const themeId = view === "room" ? `room-${room}` : view;
+  const theme = pageThemes[themeId] ?? pageThemes.home;
   return (
-    <div className="app-shell">
+    <div className="app-shell" data-page={themeId} style={themeStyle(theme)}>
       <aside className={`sidebar ${mobile ? "mobile-open" : ""}`}>
         <Brand />
         <div className="workspace-label">THE STRATEGY MAP ESCAPE ROOM</div>
@@ -447,6 +450,9 @@ export function GameApp({
               </div>
               <section className="hero">
                 <div className="hero-copy">
+                  <p className="designer-credit opening-credit">
+                    {designCredit}
+                  </p>
                   <div className="eyebrow gold">
                     PERSEPOLIS FOODS GROUP{" "}
                     <span lang="fa" dir="rtl">
@@ -1047,6 +1053,9 @@ export function GameApp({
                     </h2>
                     {room === 6 ? (
                       <>
+                        <p className="designer-credit completion-credit">
+                          {designCredit}
+                        </p>
                         <p>
                           Congratulations! You have successfully completed the
                           Persepolis Foods Strategy Map Escape Room. You have
@@ -1082,6 +1091,7 @@ export function GameApp({
                 )}
               </>
             ))}
+          <div className="designer-credit footer-credit">{designCredit}</div>
           <footer>
             <span>
               PERSEPOLIS FOODS{" "}
