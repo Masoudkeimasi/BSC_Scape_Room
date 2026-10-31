@@ -85,6 +85,13 @@ export const pageThemes: Record<string, PageTheme> = {
     photograph: "/images/room-6.webp",
     photographPosition: "center 62%",
   },
+  "room-7": {
+    name: "Rose quartz",
+    accent: "#ffc2df",
+    base: "#2d1428",
+    surface: "#41243c",
+    photograph: null,
+  },
 };
 export const designCredit =
   "Designed by Dr Masoud Keimasi for teaching purposes.";

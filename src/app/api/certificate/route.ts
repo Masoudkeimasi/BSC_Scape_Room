@@ -1,3 +1,4 @@
+import { ROOM_IDS } from "@/lib/mission";
 import { NextResponse } from "next/server";
 import { jsPDF } from "jspdf";
 import { designCredit } from "@/lib/page-themes";
@@ -11,14 +12,15 @@ export async function GET() {
     const p = await readProgress(i, c);
     if (
       !p.finishedAt ||
-      !p.completed.includes(6) ||
+      !ROOM_IDS.every((r) => p.completed.includes(r)) ||
       !p.attempts.some(
         (a) => a.score >= Math.ceil(10 * (c.settings?.passThreshold ?? 0.75)),
       )
     )
       return NextResponse.json(
         {
-          error: "Complete all six rooms and pass the final assessment first.",
+          error:
+            "Complete all seven vaults and pass the final assessment first.",
         },
         { status: 403 },
       );
@@ -49,7 +51,7 @@ export async function GET() {
       align: "center",
     });
     pdf.setFontSize(13);
-    pdf.text("Successfully completed all six rooms", 148, 124, {
+    pdf.text("Successfully completed all seven vaults", 148, 124, {
       align: "center",
     });
     pdf.text(

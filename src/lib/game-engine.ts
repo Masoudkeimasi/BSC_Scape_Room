@@ -1,4 +1,12 @@
 import {
+  ROOM_IDS,
+  ROOM_COUNT,
+  KNOWLEDGE_ROOM,
+  STRATEGY_MAP_ROOM,
+  isPuzzleOrder,
+  isPuzzleSolved,
+} from "./mission";
+import {
   Action,
   Content,
   Progress,
@@ -30,7 +38,7 @@ export const initialProgress = (
   id,
   name,
   completed: [],
-  rooms: Object.fromEntries([1, 2, 3, 4, 5, 6].map((r) => [r, newRoom()])),
+  rooms: Object.fromEntries(ROOM_IDS.map((r) => [r, newRoom()])),
   score: 0,
   attempts: [],
   events: [],
@@ -38,7 +46,7 @@ export const initialProgress = (
 export const unlocked = (p: Progress, r: number) =>
   Number.isInteger(r) &&
   r >= 1 &&
-  r <= 6 &&
+  r <= ROOM_COUNT &&
   (r === 1 || p.completed.includes(r - 1));
 const norm = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
 export function applyAction(previous: Progress, action: Action, c: Content) {
@@ -62,7 +70,7 @@ export function applyAction(previous: Progress, action: Action, c: Content) {
   const finish = () => {
     p.completed.push(room);
     message =
-      room === 6
+      room === KNOWLEDGE_ROOM
         ? "YOU ARE FREE!"
         : "ROOM COMPLETED! THE NEXT ROOM IS NOW UNLOCKED.";
   };
@@ -165,10 +173,7 @@ export function applyAction(previous: Progress, action: Action, c: Content) {
       message = "Strategic chain confirmed. Row locked; the next row is ready.";
       if (s.rows.length === 3) {
         if (s.mistakes === 0) p.score += settings.cleanBonus;
-        if (room === 5)
-          message =
-            "Three chains secured. Reconstruct the Strategy Map to unlock Room 6.";
-        else finish();
+        finish();
       }
     } else {
       mistake();
@@ -191,31 +196,37 @@ export function applyAction(previous: Progress, action: Action, c: Content) {
                       : "Wrong target–initiative relationship.");
       }
     }
-  } else if (action.type === "map") {
-    if (room !== 5 || s.rows.length !== 3)
-      throw new Error("Complete the Learning and Growth chains first.");
-    const links = [...new Set(action.links ?? [])];
-    const placements = action.placements ?? {};
-    if (c.chains.some((ch) => placements[ch.id] !== ch.perspective))
+  } else if (action.type === "puzzle-start") {
+    if (room !== STRATEGY_MAP_ROOM)
+      throw new Error("The picture puzzle is in the Strategy Map Vault.");
+    if (!s.puzzle) {
+      let order = shuffle(Array.from({ length: 16 }, (_, i) => i));
+      if (isPuzzleSolved(order)) [order[0], order[1]] = [order[1], order[0]];
+      s.puzzle = order;
+    }
+    message =
+      "Arrange the sixteen pieces to reconstruct the complete Strategy Map. Drag, or select two pieces to swap them.";
+  } else if (action.type === "puzzle-submit") {
+    if (room !== STRATEGY_MAP_ROOM || !s.puzzle)
+      throw new Error("Start the Strategy Map puzzle first.");
+    if (!isPuzzleOrder(action.order))
       throw new Error(
-        "Place all twelve objectives in the appropriate perspectives.",
+        "The puzzle must contain all sixteen distinct pieces exactly once.",
       );
-    if (
-      links.some((l) => !c.causalLinks.includes(l)) ||
-      links.length < 9 ||
-      c.chains.some((ch) => !links.some((l) => l.split(">").includes(ch.id)))
-    )
-      throw new Error(
-        "Connect all objectives using at least nine defensible links across adjacent tiers. Links are hypotheses, not proof.",
-      );
-    if ((action.explanation ?? "").trim().split(/\s+/).length < 12)
-      throw new Error("Explain a causal hypothesis in at least twelve words.");
-    s.mapDone = true;
-    s.map = { placements, links, explanation: action.explanation! };
-    finish();
-    record("map-completed");
+    s.puzzle = [...action.order];
+    if (isPuzzleSolved(action.order)) {
+      s.mapDone = true;
+      finish();
+      record("puzzle-completed");
+    } else {
+      s.incorrect++;
+      record("puzzle-incorrect");
+      message =
+        "The picture is not complete yet. Look at the borders, text and arrows, then rearrange the pieces. Earlier vaults remain secured.";
+    }
   } else if (action.type === "assessment-start") {
-    if (room !== 6) throw new Error("Assessment is in Room 6.");
+    if (room !== KNOWLEDGE_ROOM)
+      throw new Error("Assessment is in the Knowledge Vault (Room 7).");
     if (!p.assessment) {
       const qs = shuffle(c.theory).slice(0, 10);
       p.assessment = {
@@ -225,7 +236,7 @@ export function applyAction(previous: Progress, action: Action, c: Content) {
     }
     message = "Ten questions selected. Each question is worth one mark.";
   } else if (action.type === "assessment-submit") {
-    if (room !== 6 || !p.assessment)
+    if (room !== KNOWLEDGE_ROOM || !p.assessment)
       throw new Error("Start an assessment first.");
     const qs = p.assessment.ids.map((id) => c.theory.find((q) => q.id === id)!);
     if (qs.some((q) => !action.answers?.[q.id]?.trim()))
@@ -250,7 +261,7 @@ export function applyAction(previous: Progress, action: Action, c: Content) {
       p.certificateId = `PF-${p.id.slice(0, 8)}-${p.attempts.length}`;
       finish();
     } else
-      message = `THE VAULT REMAINS LOCKED — ${score}/10 (${score * 10}%). You need at least ${settings.passThreshold * 100}% (${Math.ceil(10 * settings.passThreshold)}/10). Review the concepts and retry Room 6.`;
+      message = `THE VAULT REMAINS LOCKED — ${score}/10 (${score * 10}%). You need at least ${settings.passThreshold * 100}% (${Math.ceil(10 * settings.passThreshold)}/10). Review the concepts and retry the Knowledge Vault.`;
   } else throw new Error("Unknown action.");
   return { progress: p, message, feedback };
 }

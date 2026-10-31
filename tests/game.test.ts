@@ -45,21 +45,16 @@ const until = (room: number) => {
   }
   return p;
 };
-const ready6 = () => {
-  let p = until(6);
+const ready7 = () => {
+  let p = act(until(6), { type: "puzzle-start", room: 6 });
   return act(p, {
-    type: "map",
-    room: 5,
-    placements: Object.fromEntries(
-      c.chains.map((ch) => [ch.id, ch.perspective]),
-    ),
-    links: c.causalLinks,
-    explanation:
-      "Digital capability may support reliable processes which improve customer outcomes; evidence must test this causal hypothesis.",
+    type: "puzzle-submit",
+    room: 6,
+    order: Array.from({ length: 16 }, (_, i) => i),
   });
 };
 const assess = (score: number) => {
-  let p = act(ready6(), { type: "assessment-start", room: 6 });
+  let p = act(ready7(), { type: "assessment-start", room: 7 });
   const qs = p.assessment!.ids;
   const answers = Object.fromEntries(
     qs.map((id, i) => [
@@ -67,12 +62,12 @@ const assess = (score: number) => {
       i < score ? c.theory.find((q) => q.id === id)!.answers[0] : "incorrect",
     ]),
   );
-  return act(p, { type: "assessment-submit", room: 6, answers });
+  return act(p, { type: "assessment-submit", room: 7, answers });
 };
 describe("sequential mission and protected transitions", () => {
   it("only room 1 opens initially", () => {
     const p = initialProgress("a");
-    expect([1, 2, 3, 4, 5, 6].filter((r) => unlocked(p, r))).toEqual([1]);
+    expect([1, 2, 3, 4, 5, 6, 7].filter((r) => unlocked(p, r))).toEqual([1]);
   });
   it("vision unlocks room 2 only", () => {
     const p = vision(initialProgress("a"));
@@ -81,7 +76,7 @@ describe("sequential mission and protected transitions", () => {
   });
   it("rejects direct locked room actions", () =>
     expect(() =>
-      act(initialProgress("a"), { type: "assessment-start", room: 6 }),
+      act(initialProgress("a"), { type: "assessment-start", room: 7 }),
     ).toThrow("locked"));
   it("requires exactly three vision choices and resets only on three failed submissions", () => {
     let p = initialProgress("a");
@@ -210,36 +205,31 @@ describe("sequential mission and protected transitions", () => {
   });
   it("three perspective chains unlock the next room", () =>
     expect(unlocked(until(3), 3)).toBe(true));
-  it("room 5 requires both chains and map", () => {
+  it("Learning and Growth completion opens the separate puzzle vault only", () => {
     const p = until(6);
     expect(p.rooms[5].rows).toHaveLength(3);
-    expect(unlocked(p, 6)).toBe(false);
-    expect(unlocked(ready6(), 6)).toBe(true);
+    expect(p.completed).toEqual([1, 2, 3, 4, 5]);
+    expect(unlocked(p, 6)).toBe(true);
+    expect(unlocked(p, 7)).toBe(false);
+    expect(unlocked(ready7(), 7)).toBe(true);
   });
-  it("invalid map links and short explanation are rejected", () => {
-    expect(() =>
-      act(until(6), {
-        type: "map",
-        room: 5,
-        placements: {},
-        links: [],
-        explanation: "",
-      }),
-    ).toThrow("perspectives");
-  });
+  it("the old manual connection activity is no longer accepted", () =>
+    expect(() => act(until(6), { type: "map", room: 6 })).toThrow(
+      "Unknown action",
+    ));
   it("7/10 fails and preserves earlier rooms", () => {
     const p = assess(7);
-    expect(p.completed).toEqual([1, 2, 3, 4, 5]);
+    expect(p.completed).toEqual([1, 2, 3, 4, 5, 6]);
     expect(p.finishedAt).toBeUndefined();
     expect(p.attempts[0].score).toBe(7);
   });
   it("8/10 passes and issues a certificate identifier", () => {
     const p = assess(8);
-    expect(p.completed).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(p.completed).toEqual([1, 2, 3, 4, 5, 6, 7]);
     expect(p.certificateId).toBeTruthy();
   });
   it("normalises case and whitespace for blank answers", () => {
-    let p = ready6();
+    let p = ready7();
     p.assessment = {
       ids: c.theory
         .filter((q) => q.type === "blank")
@@ -261,14 +251,14 @@ describe("sequential mission and protected transitions", () => {
           "  ",
       ]),
     );
-    p = act(p, { type: "assessment-submit", room: 6, answers });
+    p = act(p, { type: "assessment-submit", room: 7, answers });
     expect(p.attempts[0].score).toBe(10);
   });
   it("failed assessment can be retried without resetting progress", () => {
-    const p = act(assess(7), { type: "assessment-start", room: 6 });
+    const p = act(assess(7), { type: "assessment-start", room: 7 });
     expect(p.assessment!.ids).toHaveLength(10);
     expect(p.attempts).toHaveLength(1);
-    expect(p.completed).toHaveLength(5);
+    expect(p.completed).toHaveLength(6);
   });
   it("scores calculations once and rolls back failed room chain points", () => {
     let p = until(2);
@@ -396,4 +386,62 @@ describe("revised 128-option instructor matrix", () => {
     });
     expect(() => validateContent(old)).toThrow("128");
   });
+});
+
+describe("Strategy Map Vault picture puzzle", () => {
+  it("starts with sixteen unique pieces in an unsolved order and resumes the same board", () => {
+    const p = act(until(6), { type: "puzzle-start", room: 6 });
+    expect(p.rooms[6].puzzle).toHaveLength(16);
+    expect(new Set(p.rooms[6].puzzle).size).toBe(16);
+    expect(p.rooms[6].puzzle).not.toEqual(
+      Array.from({ length: 16 }, (_, i) => i),
+    );
+    expect(act(p, { type: "puzzle-start", room: 6 }).rooms[6].puzzle).toEqual(
+      p.rooms[6].puzzle,
+    );
+  });
+  it("cannot start the puzzle before Learning and Growth is completed", () =>
+    expect(() => act(until(5), { type: "puzzle-start", room: 6 })).toThrow(
+      "locked",
+    ));
+  it("rejects missing, duplicated and out-of-range pieces", () => {
+    const p = act(until(6), { type: "puzzle-start", room: 6 });
+    for (const order of [
+      [],
+      Array(16).fill(0),
+      Array.from({ length: 16 }, (_, i) => i + 1),
+    ])
+      expect(() => act(p, { type: "puzzle-submit", room: 6, order })).toThrow(
+        "sixteen distinct",
+      );
+  });
+  it("rejects an unsolved picture without resetting earlier vaults or consuming chain mistakes", () => {
+    const p = act(until(6), { type: "puzzle-start", room: 6 });
+    const failed = act(p, {
+      type: "puzzle-submit",
+      room: 6,
+      order: p.rooms[6].puzzle,
+    });
+    expect(failed.completed).toEqual([1, 2, 3, 4, 5]);
+    expect(unlocked(failed, 7)).toBe(false);
+    expect(failed.rooms[6].mistakes).toBe(0);
+    expect(failed.rooms[6].incorrect).toBe(1);
+  });
+  it("accepts only the complete ordered picture, unlocks knowledge, and makes the puzzle read-only", () => {
+    const p = ready7();
+    expect(p.rooms[6].mapDone).toBe(true);
+    expect(p.completed).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(unlocked(p, 7)).toBe(true);
+    expect(() =>
+      act(p, {
+        type: "puzzle-submit",
+        room: 6,
+        order: Array.from({ length: 16 }, (_, i) => i),
+      }),
+    ).toThrow("read-only");
+  });
+  it("the final theory assessment cannot be started in the puzzle vault", () =>
+    expect(() => act(until(6), { type: "assessment-start", room: 6 })).toThrow(
+      "Knowledge Vault",
+    ));
 });

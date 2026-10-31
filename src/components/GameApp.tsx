@@ -41,7 +41,7 @@ import {
 import { unlocked } from "@/lib/game-engine";
 import { pageThemes, themeStyle, designCredit } from "@/lib/page-themes";
 import { StrategyBoard } from "./StrategyBoard";
-import { StrategyMapBuilder } from "./StrategyMapBuilder";
+import { StrategyMapPuzzle } from "./StrategyMapPuzzle";
 import { Review } from "./Review";
 import {
   ResponsiveContainer,
@@ -88,15 +88,23 @@ export const rooms = [
     color: "#dcc2ff",
   },
   {
+    name: "Strategy Map Vault",
+    label: "THE BIG PICTURE",
+    description: "Rebuild the map. Reveal the strategy.",
+    icon: Target,
+    color: "#ffc4ad",
+  },
+  {
     name: "Knowledge Vault",
     label: "KAPLAN & NORTON",
     description: "Prove your understanding. Find the exit.",
     icon: KeyRound,
-    color: "#ffc4ad",
+    color: "#ffc2df",
   },
 ];
 export type PublicContent = {
   label: string;
+  strategyMapImage: string | null;
   approved: boolean;
   settings?: Content["settings"];
   vision: { id: string; text: string }[];
@@ -292,8 +300,9 @@ export function GameApp({
     }
   };
   const current = state
-    ? ([1, 2, 3, 4, 5, 6].find((r) => !state.progress.completed.includes(r)) ??
-      6)
+    ? ([1, 2, 3, 4, 5, 6, 7].find(
+        (r) => !state.progress.completed.includes(r),
+      ) ?? 7)
     : 1;
   const p = state?.progress;
   const done = p?.completed.includes(room);
@@ -325,7 +334,7 @@ export function GameApp({
         </nav>
         <div className="side-divider" />
         <div className="eyebrow side-title">
-          YOUR MISSION <span>06 ROOMS</span>
+          YOUR MISSION <span>07 VAULTS</span>
         </div>
         <nav className="room-nav" aria-label="Rooms">
           {rooms.map((r, i) => {
@@ -460,7 +469,7 @@ export function GameApp({
                     </span>
                   </div>
                   <h1>
-                    Six rooms.
+                    Seven vaults.
                     <br />
                     One strategy.
                     <br />
@@ -515,7 +524,7 @@ export function GameApp({
                 </div>
                 <div
                   className="vault-scene"
-                  aria-label="Illustration of a strategic vault with six digital locks"
+                  aria-label="Illustration of a strategic vault with seven digital locks"
                   role="img"
                 >
                   <div className="scene-grid" />
@@ -553,7 +562,7 @@ export function GameApp({
                     </span>
                   </div>
                   <div className="scene-footer">
-                    <span>06 LOCKS TO DECODE</span>
+                    <span>07 LOCKS TO DECODE</span>
                     <span className="mini-locks">
                       {rooms.map((_, i) => (
                         <LockKeyhole key={i} size={13} />
@@ -564,8 +573,8 @@ export function GameApp({
               </section>
               <div className="stat-strip">
                 <div>
-                  <strong>06</strong>
-                  <span>INTERACTIVE ROOMS</span>
+                  <strong>07</strong>
+                  <span>INTERACTIVE VAULTS</span>
                 </div>
                 <div>
                   <strong>12</strong>
@@ -645,7 +654,7 @@ export function GameApp({
                   Persepolis Foods Group is facing a critical strategic
                   transformation. The Board of Directors has recruited you to
                   reconstruct the company&apos;s strategic performance system.
-                  Six locked rooms stand between you and freedom. Analyse the
+                  Seven locked vaults stand between you and freedom. Analyse the
                   evidence, construct the Balanced Scorecard, connect the
                   strategy and demonstrate your knowledge of Kaplan and
                   Norton&apos;s framework to escape.
@@ -661,15 +670,15 @@ export function GameApp({
               <div className="page-kicker">MISSION CONTROL / {p.name}</div>
               <h1 className="page-title">Your strategy, taking shape.</h1>
               <p className="muted">
-                Six rooms. Twelve strategic chains. One connected performance
+                Seven vaults. Twelve strategic chains. One connected performance
                 system.
               </p>
               <div className="dashboard-stats">
                 <div className="panel">
-                  <span>ROOMS SECURED</span>
+                  <span>VAULTS SECURED</span>
                   <strong>
                     {p.completed.length}
-                    <small> / 6</small>
+                    <small> / 7</small>
                   </strong>
                 </div>
                 <div className="panel">
@@ -766,7 +775,7 @@ export function GameApp({
                     ))
                   ) : (
                     <p className="muted">
-                      The Knowledge Vault opens after Room 5.
+                      The Knowledge Vault opens after the Strategy Map Vault.
                     </p>
                   )}
                   <p>
@@ -834,11 +843,11 @@ export function GameApp({
                 >
                   <div>
                     <div className="eyebrow gold">
-                      ROOM {String(room).padStart(2, "0")} / 06 ·{" "}
+                      ROOM {String(room).padStart(2, "0")} / 07 ·{" "}
                       {rooms[room - 1].label}
                     </div>
                     <h1 className="page-title">
-                      {room === 6
+                      {room === 7
                         ? "Kaplan & Norton Knowledge Vault"
                         : rooms[room - 1].name}
                     </h1>
@@ -858,8 +867,11 @@ export function GameApp({
                     {done ? "COMPLETED · READ ONLY" : "MISSION ACTIVE"}
                   </span>
                   <span>
-                    MISTAKES {roomState!.mistakes}/
-                    {state.content.settings?.mistakeLimit ?? 3}
+                    {room <= 5
+                      ? `MISTAKES ${roomState!.mistakes}/${state.content.settings?.mistakeLimit ?? 3}`
+                      : room === 6
+                        ? `PUZZLE CHECKS ${roomState!.incorrect + (roomState!.mapDone ? 1 : 0)}`
+                        : `ASSESSMENT ATTEMPTS ${p!.attempts.length}`}
                   </span>
                   <span>SCORE {p!.score}</span>
                 </div>
@@ -930,18 +942,18 @@ export function GameApp({
                     act={act}
                   />
                 )}
-                {room === 5 && roomState!.rows.length === 3 && (
-                  <StrategyMapBuilder
-                    key={`${p!.id}-${roomState!.restarts}`}
-                    storageKey={`pf-draft-map:${p!.id}:${p!.contentVersion}:${roomState!.restarts}`}
-                    content={state.content}
-                    saved={roomState!.map}
+                {room === 6 && (
+                  <StrategyMapPuzzle
+                    key={`${p!.id}-${p!.contentVersion}`}
+                    storageKey={`pf-draft-puzzle:${p!.id}:${p!.contentVersion}`}
+                    image={state.content.strategyMapImage}
+                    saved={roomState!.puzzle}
                     done={!!done}
                     busy={busy}
                     act={act}
                   />
                 )}
-                {room === 6 && !done && (
+                {room === 7 && !done && (
                   <section className="panel">
                     <div className="eyebrow gold">
                       THE FINAL LOCK / TEN QUESTIONS
@@ -971,7 +983,7 @@ export function GameApp({
                         disabled={busy}
                         onClick={() => {
                           setAnswers({});
-                          act({ type: "assessment-start", room: 6 });
+                          act({ type: "assessment-start", room: 7 });
                         }}
                       >
                         {p!.attempts.length
@@ -983,7 +995,7 @@ export function GameApp({
                       <form
                         onSubmit={(e) => {
                           e.preventDefault();
-                          act({ type: "assessment-submit", room: 6, answers });
+                          act({ type: "assessment-submit", room: 7, answers });
                         }}
                       >
                         {p!.assessment.ids.map((id, i) => {
@@ -1042,16 +1054,16 @@ export function GameApp({
                       <Unlock size={32} />
                     </div>
                     <div className="eyebrow gold">
-                      {room === 6
-                        ? "ALL SIX ROOMS SECURED"
+                      {room === 7
+                        ? "ALL SEVEN VAULTS SECURED"
                         : "STRATEGIC LOCK RELEASED"}
                     </div>
                     <h2>
-                      {room === 6
+                      {room === 7
                         ? "YOU ARE FREE!"
                         : "ROOM COMPLETED! THE NEXT ROOM IS NOW UNLOCKED."}
                     </h2>
-                    {room === 6 ? (
+                    {room === 7 ? (
                       <>
                         <p className="designer-credit completion-credit">
                           {designCredit}
@@ -1135,7 +1147,9 @@ export function GameApp({
               <li>
                 Three incorrect submitted chains restart only the current room.
               </li>
-              <li>Reconstruct the twelve-objective Strategy Map.</li>
+              <li>
+                Rearrange sixteen picture pieces in the Strategy Map Vault.
+              </li>
               <li>Score at least 8/10 in the Knowledge Vault to escape.</li>
             </ol>
             <p className="data-note">

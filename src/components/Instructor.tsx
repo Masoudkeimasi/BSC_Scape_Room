@@ -341,7 +341,7 @@ export function Instructor() {
                     {data.students.map((p, i) => (
                       <tr key={p.id}>
                         <td>Participant {i + 1}</td>
-                        <td>{p.completed.length}/6</td>
+                        <td>{p.completed.length}/7</td>
                         <td>
                           {[2, 3, 4, 5]
                             .map((r) => p.rooms[r].rows.length)
@@ -379,7 +379,7 @@ export function Instructor() {
                 </table>
               </div>
               <h3>Room completion rates</h3>
-              {[1, 2, 3, 4, 5, 6].map((r) => (
+              {[1, 2, 3, 4, 5, 6, 7].map((r) => (
                 <p key={r}>
                   Room {r}:{" "}
                   {data.students.filter((p) => p.completed.includes(r)).length}/

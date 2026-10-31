@@ -1,6 +1,6 @@
 # Persepolis Foods — The Strategy Map Escape Room
 
-A playable six-room Balanced Scorecard learning game. Next.js App Router, React, TypeScript, Tailwind, a shadcn-style Radix/CVA Button, Lucide, Motion, dnd-kit, React Flow, Recharts, Zod, Vitest and Playwright.
+A playable seven-vault Balanced Scorecard learning game. Next.js App Router, React, TypeScript, Tailwind, a shadcn-style Radix/CVA Button, Lucide, Motion, dnd-kit, Recharts, Zod, Vitest and Playwright.
 
 ## Run
 
@@ -25,10 +25,10 @@ Playwright defaults to `/usr/bin/chromium`. Set `CHROMIUM_PATH` to another insta
 
 ## What is implemented
 
-- Six strictly sequential rooms, explicit next-room entry, read-only completed rooms and resumable progress.
+- Seven strictly sequential vaults, explicit next-room entry, read-only completed rooms and resumable progress.
 - Vision selection, three progressive O–M–T–I rows in each perspective, any-order chains, component-safe drag/drop and click selection, used-card disabling, mistakes and current-room resets.
 - Linked baseline calculations, D25 directional feedback, D26 chain alignment, scoring, clean-attempt bonuses and rollback of failed-room points.
-- Twelve-objective React Flow map with accessible perspective and connection controls, configurable multiple causal hypotheses and a written explanation.
+- A separate Strategy Map Vault with a 16-piece, 4 × 4 picture puzzle, drag/drop and keyboard/click swap controls, browser draft persistence, server-side completion checks and a full-image reveal. Students do not classify objectives, draw arrows or write a causal explanation.
 - Forty theory questions (ten supplied plus thirty original additions); ten random questions per attempt, shuffled choices, blank-answer alternatives, unlimited retakes, default 8/10 pass boundary.
 - Accessible annual-review sections, search and financial tables; student dashboard, chart and PDF certificate with Unicode font.
 - Instructor login, full JSON content editing/import/export, quick option editing, annual-review text/JSON upload, student analytics, distractor frequencies, anonymised CSV and authorised resets.
@@ -47,7 +47,7 @@ Important source issues are explicitly presented in the review's reconciliation 
 - Market share £600m/£5,000m remains a supplementary illustration. The emissions baseline of 500,000 tonnes comes from the annual review. Learning & Growth L1 now concerns external R&D partnerships; L2 concerns AI proficiency, with a linked 80% − 30% = 50 percentage-point calculation. The old certification task is retired.
 - Each of the sixteen perspective/component groups contains eight options (3 correct + 5 incorrect), giving 128 total, 48 correct and 80 distractors. The attachment’s stale “nine options” header and “six distractors” Process footer do not override its actual eight rows or the user’s explicit instruction.
 - The review says both “more than 70 markets” and “28 markets”; the scope needs instructor reconciliation.
-- Vision selections and allowable causal links are editorial interpretations pending instructor review. Maps are hypotheses. Text explanations meet a length gate; this application does not claim automated semantic grading of student prose.
+- Vision selections remain editorial interpretations pending instructor review. The instructor-supplied map is displayed exactly as provided. Its causal arrows are strategic hypotheses. The former manual connection and written-explanation activity is replaced by the picture puzzle.
 - The complete supplied bank is preserved; no generated distractors replace it. Targets remain fictional educational assumptions. `approved` defaults to false until an instructor reconciles the case.
 
 ## Instructor configuration and imports
@@ -130,3 +130,17 @@ Accessibility includes click alternatives to dragging, keyboard drag support, la
 Each room uses a distinct sapphire, gold, cyan, emerald, amethyst or copper palette. Text and option cards use larger type, opaque surfaces and stronger contrast. The opening screen, completion screen, footer and PDF certificate credit **Dr Masoud Keimasi** as the game designer for teaching purposes.
 
 Six original photographs from the user's `page 6.zip` are served locally from `public/images/`, one per room. No Wikimedia access or third-party image request is needed. Their mapping and source-file checksums are recorded in `docs/room-photographs.md` and `docs/room-photographs.json`. The files are unchanged; CSS controls cropping, placement and dark overlays while content cards remain opaque. Photographer/licensing metadata was not supplied; no authorship claim is made for the photographs.
+
+## Seven-vault progression and the picture puzzle
+
+1. Vision Vault — select the three aligned strategic statements.
+2. Financial Vault — complete three O–M–T–I chains.
+3. Customer Vault — complete three chains.
+4. Internal Business Process Vault — complete three chains.
+5. Learning and Growth Vault — complete three chains; no map design is required here.
+6. Strategy Map Vault — reconstruct the instructor’s image from sixteen upright pieces in a 4 × 4 grid. Drag a piece onto another, or select two to swap them. Enlarge the puzzle to read details. A correct submission reveals the entire image and unlocks Room 7. There is no mandatory timer or limit on puzzle checks.
+7. Knowledge Vault — score at least 8/10 under default settings to escape.
+
+The source image was supplied in `Perspolis_Strategy_Map.zip`. It is copied unchanged to `public/images/strategy-map.png`; `docs/strategy-map-image.json` records its dimensions and checksum. CSS renders the sixteen fragments without recompressing or modifying the image. Incorrect picture checks preserve all earlier completed vaults. Puzzle drafts persist locally and successful completion is checked on the server; completed puzzles are read-only. The image is a public educational asset, so this visual exercise is not a secure standalone summative assessment.
+
+The mission-format version changes with this update. Old six-room anonymous missions must use the explicit restart control, and authenticated sessions require an instructor reset. Certificates and dashboards now report seven completed vaults.

@@ -7,7 +7,9 @@ test("locked URLs, private APIs, progress refresh and responsive homepage", asyn
   page,
 }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /Six rooms/ })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /Seven vaults/ }),
+  ).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Start Mission", exact: true }),
   ).toBeEnabled();
@@ -23,14 +25,16 @@ test("locked URLs, private APIs, progress refresh and responsive homepage", asyn
   ).toBeVisible();
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /Six rooms/ })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /Seven vaults/ }),
+  ).toBeVisible();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
 });
-test("complete six rooms through progressive boards, map, assessment and PDF", async ({
+test("complete seven vaults through boards, picture puzzle, assessment and PDF", async ({
   page,
 }) => {
   test.setTimeout(180000);
@@ -103,49 +107,104 @@ test("complete six rooms through progressive boards, map, assessment and PDF", a
         ).toBeDisabled();
       }
     }
-    if (room === 5) {
-      for (const ch of bank.chains) {
-        const text = bank.options.find((o) => o.id === ch.options[0])!.text;
-        await page
-          .getByRole("combobox", {
-            name: `Perspective for ${text}`,
-            exact: true,
-          })
-          .selectOption(ch.perspective);
-      }
-      await page.reload();
-      await expect(
-        page.getByRole("combobox", {
-          name: `Perspective for ${bank.options.find((o) => o.id === "F-O1")!.text}`,
-          exact: true,
-        }),
-      ).toHaveValue("F");
-      for (const link of bank.causalLinks) {
-        const [source, target] = link.split(">");
-        await page
-          .getByLabel("From objective", { exact: true })
-          .selectOption(source);
-        await page
-          .getByLabel("To objective", { exact: true })
-          .selectOption(target);
-        await page
-          .getByRole("button", { name: "Add causal link", exact: true })
-          .click();
-      }
-      await page
-        .getByLabel("Explain one causal hypothesis")
-        .fill(
-          "Digital learning can support process reliability which improves customer value; measured evidence should test this strategic hypothesis.",
-        );
-      await page
-        .getByRole("button", { name: "Validate Strategy Map", exact: true })
-        .click();
-    }
     await expect(
       page.getByRole("link", { name: "ENTER NEXT ROOM" }),
     ).toBeVisible();
   }
   await page.getByRole("link", { name: "ENTER NEXT ROOM" }).click();
+  await expect(page).toHaveURL(/room\/6/);
+  await expect(
+    page.getByRole("heading", { name: "Strategy Map Vault", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Begin Strategy Map Puzzle", exact: true })
+    .click();
+  await expect(page.locator(".puzzle-piece")).toHaveCount(16);
+  // Piece identifiers are internal test hooks; students solve using the image fragments.
+  let order = await page
+    .locator(".puzzle-piece")
+    .evaluateAll((els) =>
+      els.map((el) => Number(el.getAttribute("data-tile"))),
+    );
+  await page.screenshot({
+    path: "/tmp/strategy-puzzle-desktop.png",
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({
+    path: "/tmp/strategy-puzzle-mobile.png",
+    fullPage: true,
+  });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await page.setViewportSize({ width: 1280, height: 720 });
+  const first = order[0];
+  await page.getByTestId("puzzle-slot-0").focus();
+  await page.getByTestId("puzzle-slot-0").press("Enter");
+  await page.getByTestId("puzzle-slot-1").focus();
+  await page.getByTestId("puzzle-slot-1").press("Enter");
+  [order[0], order[1]] = [order[1], order[0]];
+  await page.reload();
+  await expect(page.getByTestId("puzzle-slot-1")).toHaveAttribute(
+    "data-tile",
+    String(first),
+  );
+  const dragged = order[0];
+  const handle = page.getByTestId("puzzle-slot-0");
+  await handle.scrollIntoViewIfNeeded();
+  const source = await handle.boundingBox();
+  const target = await page.getByTestId("puzzle-slot-1").boundingBox();
+  await page.mouse.move(
+    source!.x + source!.width / 2,
+    source!.y + source!.height / 2,
+  );
+  await page.mouse.down();
+  await page.mouse.move(
+    source!.x + source!.width / 2 + 12,
+    source!.y + source!.height / 2,
+    { steps: 3 },
+  );
+  await expect(handle).toHaveCSS("z-index", "10");
+  await page.mouse.move(
+    target!.x + target!.width / 2,
+    target!.y + target!.height / 2,
+    { steps: 12 },
+  );
+  await page.mouse.up();
+  [order[0], order[1]] = [order[1], order[0]];
+  await expect(page.getByTestId("puzzle-slot-1")).toHaveAttribute(
+    "data-tile",
+    String(dragged),
+  );
+  const keyboardTile = order[0];
+  await page.getByTestId("puzzle-slot-0").focus();
+  await page.getByTestId("puzzle-slot-0").press("Space");
+  await expect(page.getByTestId("puzzle-slot-0")).toHaveCSS("z-index", "10");
+  for (let step = 0; step < 8; step++)
+    await page.getByTestId("puzzle-slot-0").press("ArrowRight");
+  await page.getByTestId("puzzle-slot-0").press("Space");
+  [order[0], order[1]] = [order[1], order[0]];
+  await expect(page.getByTestId("puzzle-slot-1")).toHaveAttribute(
+    "data-tile",
+    String(keyboardTile),
+  );
+  for (let i = 0; i < 16; i++) {
+    const at = order.indexOf(i);
+    if (at === i) continue;
+    await page.getByTestId(`puzzle-slot-${i}`).click();
+    await page.getByTestId(`puzzle-slot-${at}`).click();
+    [order[i], order[at]] = [order[at], order[i]];
+  }
+  await page
+    .getByRole("button", { name: "Check Strategy Map", exact: true })
+    .click();
+  await expect(page.locator(".completed-strategy-map")).toBeVisible();
+  await expect(page.locator(".puzzle-piece")).toHaveCount(0);
+  await page.getByRole("link", { name: "ENTER NEXT ROOM" }).click();
+  await expect(page).toHaveURL(/room\/7/);
   await page.getByRole("button", { name: "Begin Assessment" }).click();
   const state = await (await page.request.get("/api/game")).json();
   for (const [i, id] of state.progress.assessment.ids.entries()) {
@@ -362,7 +421,7 @@ test("designer credits, distinct room palettes and readable panel contrast", asy
   );
   const accents = new Set<string>();
   const photographs = new Set<string>();
-  for (let room = 1; room <= 6; room++) {
+  for (let room = 1; room <= 7; room++) {
     await page.goto(`/room/${room}`);
     await expect(page.locator(".app-shell")).toHaveAttribute(
       "data-page",
@@ -383,18 +442,20 @@ test("designer credits, distinct room palettes and readable panel contrast", asy
         };
       });
     accents.add(sample.accent);
-    const photo = await page.locator(".app-shell").evaluate(async (el) => {
-      const css = getComputedStyle(el).getPropertyValue("--page-photo");
-      const src = css.match(/url\(["']?([^"')]+)["']?\)/)?.[1];
-      if (!src) throw new Error("Room photograph missing");
-      const image = new Image();
-      image.src = src;
-      await image.decode();
-      return { src, width: image.naturalWidth, height: image.naturalHeight };
-    });
-    photographs.add(photo.src);
-    expect(photo.width).toBeGreaterThanOrEqual(500);
-    expect(photo.height).toBeGreaterThanOrEqual(300);
+    if (room <= 6) {
+      const photo = await page.locator(".app-shell").evaluate(async (el) => {
+        const css = getComputedStyle(el).getPropertyValue("--page-photo");
+        const src = css.match(/url\(["']?([^"')]+)["']?\)/)?.[1];
+        if (!src) throw new Error("Room photograph missing");
+        const image = new Image();
+        image.src = src;
+        await image.decode();
+        return { src, width: image.naturalWidth, height: image.naturalHeight };
+      });
+      photographs.add(photo.src);
+      expect(photo.width).toBeGreaterThanOrEqual(500);
+      expect(photo.height).toBeGreaterThanOrEqual(300);
+    }
     const luminance = (color: string) => {
       const channels = color
         .match(/[\d.]+/g)!
@@ -411,7 +472,7 @@ test("designer credits, distinct room palettes and readable panel contrast", asy
       (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05),
     ).toBeGreaterThanOrEqual(7);
   }
-  expect(accents.size).toBe(6);
+  expect(accents.size).toBe(7);
   expect(photographs.size).toBe(6);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");

@@ -1,3 +1,5 @@
+import { ROOM_IDS, KNOWLEDGE_ROOM, MISSION_VERSION } from "./mission";
+import { STRATEGY_MAP_IMAGE } from "./strategy-map-image";
 import "server-only";
 import { cookies } from "next/headers";
 import {
@@ -99,7 +101,10 @@ export async function content() {
   return validateContent(fixture);
 }
 export const version = (c: Content) =>
-  createHash("sha256").update(JSON.stringify(c)).digest("hex").slice(0, 16);
+  createHash("sha256")
+    .update(MISSION_VERSION + JSON.stringify(c))
+    .digest("hex")
+    .slice(0, 16);
 export async function setCookie(name: string, value: string) {
   (await cookies()).set(name, value, {
     httpOnly: true,
@@ -228,7 +233,7 @@ const ordered = <T extends { id: string }>(items: T[], seed: string) =>
       ),
   );
 export async function publicState(p: Progress, c: Content) {
-  const room = [1, 2, 3, 4, 5, 6].find((r) => !p.completed.includes(r)) ?? 6;
+  const room = ROOM_IDS.find((r) => !p.completed.includes(r)) ?? KNOWLEDGE_ROOM;
   const assessment = p.assessment
     ? c.theory
         .filter((q) => p.assessment!.ids.includes(q.id))
@@ -239,9 +244,11 @@ export async function publicState(p: Progress, c: Content) {
           choices: p.assessment!.choices[q.id],
         }))
     : [];
+  const strategyMapImage = room >= 6 ? STRATEGY_MAP_IMAGE : null;
   return {
     progress: p,
     content: {
+      strategyMapImage,
       label: c.label,
       approved: c.approved,
       settings: c.settings,

@@ -1,9 +1,10 @@
+import { ROOM_IDS, ROOM_COUNT, isPuzzleOrder } from "./mission";
 import { z } from "zod";
 export const progressSchema = z
   .object({
     id: z.string(),
     name: z.string().max(80),
-    completed: z.array(z.number().int().min(1).max(6)),
+    completed: z.array(z.number().int().min(1).max(ROOM_COUNT)),
     rooms: z.record(
       z.string(),
       z.object({
@@ -14,6 +15,10 @@ export const progressSchema = z
         calculations: z.record(z.string(), z.number()),
         calculationErrors: z.number().nonnegative(),
         mapDone: z.boolean(),
+        puzzle: z
+          .array(z.number().int())
+          .refine(isPuzzleOrder, "Invalid puzzle permutation")
+          .optional(),
         map: z
           .object({
             placements: z.record(z.string(), z.string()),
@@ -52,7 +57,7 @@ export const progressSchema = z
   })
   .refine(
     (p) =>
-      [1, 2, 3, 4, 5, 6].every((r) => p.rooms[r]) &&
+      ROOM_IDS.every((r) => p.rooms[r]) &&
       p.completed.every((r, i) => r === i + 1),
     "Invalid room progression",
   );

@@ -9,8 +9,10 @@ All six images were supplied by the user in `page 6.zip`. The original files are
 | 3 — Customer Vault                  | `room-3.webp` | `Page 3.webp`     | Gate of All Nations and the walkway         |
 | 4 — Internal Business Process Vault | `room-4.jpg`  | `page 3.jpg`      | A different view of the Gate of All Nations |
 | 5 — Learning and Growth Vault       | `room-5.jpg`  | `page 5.jpg`      | Column base and stone guardian              |
-| 6 — Knowledge Vault                 | `room-6.webp` | `page 6.webp`     | Paired griffin capitals in warm light       |
+| 6 — Strategy Map Vault              | `room-6.webp` | `page 6.webp`     | Paired griffin capitals in warm light       |
 
 The archive contains two different Page 3 images and no Page 4 image. The additional Page 3 image is assigned to Room 4 so every photograph appears on a different room page.
 
 `room-photographs.json` records original filenames and SHA-256 checksums. `src/lib/page-themes.ts` controls each photograph and its crop position. CSS gradients protect the room title's contrast; activity cards are opaque. The photographs are decorative backgrounds rather than redundant screen-reader content.
+
+The Knowledge Vault is now Room 7 with its own rose palette. The six decorative photographs retain separate room assignments. The Strategy Map puzzle uses the separate original instructor-supplied `public/images/strategy-map.png`.

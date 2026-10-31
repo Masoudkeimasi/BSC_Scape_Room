@@ -65,6 +65,7 @@ export type RoomState = {
   calculations: Record<string, number>;
   calculationErrors: number;
   mapDone: boolean;
+  puzzle?: number[];
   map?: {
     placements: Record<string, string>;
     links: string[];
@@ -88,6 +89,7 @@ export type Progress = {
 };
 export type Action = {
   type: string;
+  order?: number[];
   room?: number;
   ids?: string[];
   calculationId?: string;
