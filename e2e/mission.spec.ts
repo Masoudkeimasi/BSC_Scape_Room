@@ -361,6 +361,7 @@ test("designer credits, distinct room palettes and readable panel contrast", asy
     "Dr Masoud Keimasi",
   );
   const accents = new Set<string>();
+  const photographs = new Set<string>();
   for (let room = 1; room <= 6; room++) {
     await page.goto(`/room/${room}`);
     await expect(page.locator(".app-shell")).toHaveAttribute(
@@ -382,6 +383,18 @@ test("designer credits, distinct room palettes and readable panel contrast", asy
         };
       });
     accents.add(sample.accent);
+    const photo = await page.locator(".app-shell").evaluate(async (el) => {
+      const css = getComputedStyle(el).getPropertyValue("--page-photo");
+      const src = css.match(/url\(["']?([^"')]+)["']?\)/)?.[1];
+      if (!src) throw new Error("Room photograph missing");
+      const image = new Image();
+      image.src = src;
+      await image.decode();
+      return { src, width: image.naturalWidth, height: image.naturalHeight };
+    });
+    photographs.add(photo.src);
+    expect(photo.width).toBeGreaterThanOrEqual(500);
+    expect(photo.height).toBeGreaterThanOrEqual(300);
     const luminance = (color: string) => {
       const channels = color
         .match(/[\d.]+/g)!
@@ -399,6 +412,7 @@ test("designer credits, distinct room palettes and readable panel contrast", asy
     ).toBeGreaterThanOrEqual(7);
   }
   expect(accents.size).toBe(6);
+  expect(photographs.size).toBe(6);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await expect(page.locator(".opening-credit")).toBeVisible();

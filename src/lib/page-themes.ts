@@ -4,8 +4,9 @@ export type PageTheme = {
   accent: string;
   base: string;
   surface: string;
-  // Add the supplied photograph's local URL once the original file is available.
+  // Original user-supplied photographs, served locally without external requests.
   photograph: string | null;
+  photographPosition?: string;
 };
 export const pageThemes: Record<string, PageTheme> = {
   home: {
@@ -41,42 +42,48 @@ export const pageThemes: Record<string, PageTheme> = {
     accent: "#a9ceff",
     base: "#0b1c36",
     surface: "#162e4c",
-    photograph: null,
+    photograph: "/images/room-1.webp",
+    photographPosition: "center 66%",
   },
   "room-2": {
     name: "Treasury gold",
     accent: "#ffe0a1",
     base: "#251d0f",
     surface: "#352b1a",
-    photograph: null,
+    photograph: "/images/room-2.jpg",
+    photographPosition: "center 65%",
   },
   "room-3": {
     name: "Cyan",
     accent: "#91eaff",
     base: "#07232d",
     surface: "#103641",
-    photograph: null,
+    photograph: "/images/room-3.webp",
+    photographPosition: "center 45%",
   },
   "room-4": {
     name: "Emerald",
     accent: "#9df0c5",
     base: "#09271d",
     surface: "#143c2d",
-    photograph: null,
+    photograph: "/images/room-4.jpg",
+    photographPosition: "center 42%",
   },
   "room-5": {
     name: "Amethyst",
     accent: "#dcc2ff",
     base: "#211330",
     surface: "#352344",
-    photograph: null,
+    photograph: "/images/room-5.jpg",
+    photographPosition: "center 60%",
   },
   "room-6": {
     name: "Copper",
     accent: "#ffc4ad",
     base: "#2c1714",
     surface: "#412620",
-    photograph: null,
+    photograph: "/images/room-6.webp",
+    photographPosition: "center 62%",
   },
 };
 export const designCredit =
@@ -87,5 +94,6 @@ export function themeStyle(theme: PageTheme) {
     "--page-base": theme.base,
     "--page-surface": theme.surface,
     "--page-photo": theme.photograph ? `url("${theme.photograph}")` : "none",
+    "--page-photo-position": theme.photographPosition ?? "center",
   } as CSSProperties;
 }

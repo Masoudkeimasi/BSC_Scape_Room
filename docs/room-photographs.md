@@ -1,14 +1,16 @@
-# Supplied Persepolis photographs
+# Room photographs
 
-The user provided six inline photographs. Their original file bytes were not available in the workspace, so no replacement imagery or broken image URLs have been added.
+All six images were supplied by the user in `page 6.zip`. The original files are copied unchanged into `public/images/` and served locally. There are no external image requests or Wikimedia dependencies. No photographer or license metadata was included; being supplied by the game designer is not a claim that they photographed the images.
 
-Once uploaded as image files, place optimised copies in `public/images/` and set the corresponding `photograph` URL in `src/lib/page-themes.ts`:
+| Room                          | Local file    | Original filename | Subject                                     |
+| ----------------------------- | ------------- | ----------------- | ------------------------------------------- |
+| 1 — Vision Vault              | `room-1.webp` | `Page 1.webp`     | Terrace reliefs and columns beneath clouds  |
+| 2 — Financial Boardroom       | `room-2.jpg`  | `Page 2.jpg`      | Tall columns under a clear blue sky         |
+| 3 — Customer Intelligence Lab | `room-3.webp` | `Page 3.webp`     | Gate of All Nations and the walkway         |
+| 4 — Operations Control Centre | `room-4.jpg`  | `page 3.jpg`      | A different view of the Gate of All Nations |
+| 5 — Innovation Academy        | `room-5.jpg`  | `page 5.jpg`      | Column base and stone guardian              |
+| 6 — Knowledge Vault           | `room-6.webp` | `page 6.webp`     | Paired griffin capitals in warm light       |
 
-1. Vision Vault (sapphire): wide view of tall columns under a clear blue sky.
-2. Financial Boardroom (gold): terrace reliefs and columns under clouds.
-3. Customer Intelligence Lab (cyan): the Gate of All Nations.
-4. Operations Control Centre (emerald): paired griffin capitals in warm light.
-5. Innovation Academy (amethyst): column base and stone guardian.
-6. Knowledge Vault (copper): panoramic view across the archaeological site.
+The archive contains two different Page 3 images and no Page 4 image. The additional Page 3 image is assigned to Room 4 so every photograph appears on a different room page.
 
-Each photograph belongs to one room only. Full-page gradients provide an intentional fallback until the exact original photographs are supplied. Opaque content cards preserve readability over photography. Decorative background images need no redundant screen-reader text.
+`room-photographs.json` records original filenames and SHA-256 checksums. `src/lib/page-themes.ts` controls each photograph and its crop position. CSS gradients protect the room title's contrast; activity cards are opaque. The photographs are decorative backgrounds rather than redundant screen-reader content.

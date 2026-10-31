@@ -1,0 +1,38 @@
+[
+  {
+    "room": 1,
+    "file": "room-1.webp",
+    "uploadedFilename": "Page 1.webp",
+    "sha256": "b1c38483a989af8a3b9bca8b53fd9ccc8352fe9a70285f6f3c5e286323dbfe31"
+  },
+  {
+    "room": 2,
+    "file": "room-2.jpg",
+    "uploadedFilename": "Page 2.jpg",
+    "sha256": "df8715d2520f79e3d032504190b5c61c72012954702e915c02dff021d64c0cc8"
+  },
+  {
+    "room": 3,
+    "file": "room-3.webp",
+    "uploadedFilename": "Page 3.webp",
+    "sha256": "c194c08be720ec5add7096b297ede38af3dacee1877b9665b7a06fc66e3e98d6"
+  },
+  {
+    "room": 4,
+    "file": "room-4.jpg",
+    "uploadedFilename": "page 3.jpg",
+    "sha256": "e1e516f3aa0246fd6ac14a44203fe7f4afd75293ada63124763b54ee86c3b7b2"
+  },
+  {
+    "room": 5,
+    "file": "room-5.jpg",
+    "uploadedFilename": "page 5.jpg",
+    "sha256": "e0364636b14935e1ec7dc0549118a35e1ecddd1c287531a482518c55396799b3"
+  },
+  {
+    "room": 6,
+    "file": "room-6.webp",
+    "uploadedFilename": "page 6.webp",
+    "sha256": "a654be598c0d3416e0f324f19e93b79716ffe0eb70db364666804ae11f11e282"
+  }
+]
