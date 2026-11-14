@@ -27,6 +27,7 @@ import {
   LogIn,
   X,
   Menu,
+  Smile,
 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { Button } from "./ui/button";
@@ -328,12 +329,6 @@ export function GameApp({
           >
             <LayoutDashboard size={18} /> Mission dashboard
           </Link>
-          <Link
-            className={view === "review" ? "nav active" : "nav"}
-            href="/review"
-          >
-            <BookOpen size={18} /> Annual review <ArrowUpRight size={13} />
-          </Link>
         </nav>
         <div className="side-divider" />
         <div className="eyebrow side-title">
@@ -481,7 +476,10 @@ export function GameApp({
                   <p className="hero-subtitle">
                     Decode the Strategy. Build the Scorecard.
                     <br />
-                    Escape the Vault.
+                    <span className="classroom-tagline">
+                      Escape the classroom.{" "}
+                      <Smile size={23} role="img" aria-label="Smile" />
+                    </span>
                   </p>
                   <p className="hero-description">
                     Step inside the boardroom. Connect the decisions that
@@ -662,9 +660,6 @@ export function GameApp({
                   strategy and demonstrate your knowledge of Kaplan and
                   Norton&apos;s framework to escape.
                 </p>
-                <Link href="/review">
-                  Open the annual review <BookOpen size={17} />
-                </Link>
               </section>
             </>
           )}

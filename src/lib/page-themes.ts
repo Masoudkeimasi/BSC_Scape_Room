@@ -10,11 +10,12 @@ export type PageTheme = {
 };
 export const pageThemes: Record<string, PageTheme> = {
   home: {
-    name: "Midnight teal",
-    accent: "#a6efd9",
-    base: "#071d21",
-    surface: "#102c30",
-    photograph: null,
+    name: "Persepolis sunset",
+    accent: "#ffdb9c",
+    base: "#281a12",
+    surface: "#3a291d",
+    photograph: "/images/room-6.webp",
+    photographPosition: "center 62%",
   },
   mission: {
     name: "Indigo",

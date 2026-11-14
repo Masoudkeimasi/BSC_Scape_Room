@@ -2873,3 +2873,117 @@ footer > span:nth-child(2) {
     font-size: 11px;
   }
 }
+/* Welcome page: warm sandstone and sunset gold, echoing the colourful map. */
+.app-shell[data-page="home"] .main-shell {
+  background-image:
+    radial-gradient(ellipse at 86% 15%, #eeb75b22, transparent 52%),
+    linear-gradient(105deg, #281a12f5 5%, #352318e6 55%, #574128a8 100%),
+    var(--page-photo);
+  background-position:
+    center top,
+    center top,
+    var(--page-photo-position, center);
+  background-size: cover;
+}
+.app-shell[data-page="home"] .hero-copy {
+  color: #fff5e7;
+}
+.app-shell[data-page="home"] .hero-subtitle {
+  color: #fff4dd;
+}
+.classroom-tagline {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.classroom-tagline svg {
+  color: #ffdb9c;
+  stroke-width: 1.8;
+}
+.app-shell[data-page="home"] .hero-description {
+  color: #e5d4c1;
+}
+.app-shell[data-page="home"] .hero-meta {
+  color: #dec7a8;
+}
+.app-shell[data-page="home"] .vault-scene {
+  background: radial-gradient(ellipse at 55% 45%, #c68c3b42, transparent 68%);
+}
+.app-shell[data-page="home"] .scene-grid {
+  background-image:
+    linear-gradient(#d1a66c24 1px, transparent 1px),
+    linear-gradient(90deg, #d1a66c24 1px, transparent 1px);
+}
+.app-shell[data-page="home"] .scene-orbit {
+  border-color: #d4ac6a42;
+}
+.app-shell[data-page="home"] .scene-coordinate,
+.app-shell[data-page="home"] .scene-footer {
+  color: #ddbd87;
+}
+.app-shell[data-page="home"] .vault-outer {
+  background: linear-gradient(
+    130deg,
+    #9f7442,
+    #49311e 35%,
+    #34261b 80%,
+    #8b6c42
+  );
+  border-color: #d0ad71;
+  box-shadow:
+    20px 25px 0 #1c120d,
+    23px 27px 0 #80623a,
+    20px 35px 45px #0009,
+    inset 2px 2px 0 #e8c48a66;
+}
+.app-shell[data-page="home"] .vault-inner {
+  border-color: #be9c657a;
+  background: linear-gradient(130deg, #604329, #2f2118);
+}
+.app-shell[data-page="home"] .vault-rim {
+  border-color: #8f6a3e;
+  background: repeating-conic-gradient(#ba925a 0deg 1deg, #604527 1deg 14deg);
+  box-shadow:
+    0 0 0 1px #d2b076,
+    0 0 0 7px #392619,
+    inset 0 0 0 1px #e7ca89,
+    inset 0 0 12px #0009;
+}
+.app-shell[data-page="home"] .vault-core {
+  background: radial-gradient(#604529, #2d2118);
+  border-color: #f0cd876b;
+  box-shadow: 0 0 0 5px #3e2c1b;
+  color: #ffe0a3;
+}
+.app-shell[data-page="home"] .vault-core > small {
+  color: #dcbf88;
+}
+.app-shell[data-page="home"] .floating-tag {
+  background: #352619ed;
+  border-color: #aa844d;
+  color: #f8dcac;
+}
+.app-shell[data-page="home"] .tag-two strong,
+.app-shell[data-page="home"] .mini-locks {
+  color: #dfc390;
+}
+.app-shell[data-page="home"] .room-card {
+  box-shadow: 0 8px 22px #100a0726;
+}
+.app-shell[data-page="home"] .name-input {
+  color: #d2ba98;
+}
+.app-shell[data-page="home"] .name-input input {
+  border-bottom-color: #987b58;
+  color: #fff5e8;
+}
+@media (max-width: 600px) {
+  .classroom-tagline {
+    gap: 8px;
+  }
+  .classroom-tagline svg {
+    width: 21px;
+    height: 21px;
+  }
+}

@@ -7,6 +7,15 @@ test("locked URLs, private APIs, progress refresh and responsive homepage", asyn
   page,
 }) => {
   await page.goto("/");
+  await expect(page.locator(".hero-subtitle")).toContainText(
+    "Escape the classroom.",
+  );
+  await expect(
+    page.getByRole("img", { name: "Smile", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: /annual review/i })).toHaveCount(
+    0,
+  );
   await expect(
     page.getByRole("heading", { name: /Seven vaults/ }),
   ).toBeVisible();
