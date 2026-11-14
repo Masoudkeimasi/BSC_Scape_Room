@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import {
   ArrowUpRight,
   ArrowRight,
-  BookOpen,
   Check,
   ChevronRight,
   LockKeyhole,
@@ -863,13 +862,6 @@ export function GameApp({
                     </h1>
                     <p className="muted">{rooms[room - 1].description}</p>
                   </div>
-                  <Link
-                    className="button outline"
-                    href="/review"
-                    target="_blank"
-                  >
-                    <BookOpen size={16} /> Case evidence
-                  </Link>
                   {canRevealAnswers && (
                     <Link
                       className="button primary"
