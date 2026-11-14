@@ -11,6 +11,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { Brand } from "./GameApp";
+import { VAULT_NAMES } from "@/lib/mission";
 import { pageThemes, themeStyle, designCredit } from "@/lib/page-themes";
 import { Button } from "./ui/button";
 import { Content, Progress } from "@/lib/types";
@@ -33,6 +34,13 @@ export function Instructor() {
       "strategy-map"
     ) {
       window.location.assign("/instructor/preview/strategy-map");
+      return;
+    }
+    const answerRoom = new URLSearchParams(window.location.search).get(
+      "answers",
+    );
+    if (answerRoom && /^[1-7]$/.test(answerRoom)) {
+      window.location.assign(`/instructor/answers/${answerRoom}`);
       return;
     }
     setData(d);
@@ -182,6 +190,27 @@ export function Instructor() {
                   Preview Strategy Map Vault
                 </Link>
               </Button>
+            </section>
+            <section className="panel instructor-answer-hub">
+              <div className="eyebrow gold">ANSWER KEYS / ALL SEVEN STAGES</div>
+              <h2>See the correct answers in every vault.</h2>
+              <p className="muted">
+                Open any stage directly to review its answers and calculations.
+                Viewing an answer key does not change student progress.
+              </p>
+              <div className="answer-stage-grid">
+                {VAULT_NAMES.map((name, i) => (
+                  <article className="answer-stage-card" key={name}>
+                    <span className="eyebrow gold">STAGE {i + 1} / 7</span>
+                    <h3>{name}</h3>
+                    <Button asChild variant="outline">
+                      <Link href={`/instructor/answers/${i + 1}`}>
+                        Show correct answers — {name}
+                      </Link>
+                    </Button>
+                  </article>
+                ))}
+              </div>
             </section>
             <div className="dashboard-stats">
               <div className="panel">

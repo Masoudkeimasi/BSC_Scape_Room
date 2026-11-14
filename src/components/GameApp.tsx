@@ -39,6 +39,7 @@ import {
   Theory,
 } from "@/lib/types";
 import { unlocked } from "@/lib/game-engine";
+import { VAULT_NAMES } from "@/lib/mission";
 import { pageThemes, themeStyle, designCredit } from "@/lib/page-themes";
 import { StrategyBoard } from "./StrategyBoard";
 import { StrategyMapPuzzle } from "./StrategyMapPuzzle";
@@ -53,49 +54,49 @@ import {
 } from "recharts";
 export const rooms = [
   {
-    name: "Vision Vault",
+    name: VAULT_NAMES[0],
     label: "STRATEGIC DIRECTION",
     description: "Find the purpose. Set the direction.",
     icon: Compass,
     color: "#a9ceff",
   },
   {
-    name: "Financial Vault",
+    name: VAULT_NAMES[1],
     label: "FINANCIAL",
     description: "Turn ambition into sustainable value.",
     icon: ChartNoAxesCombined,
     color: "#ffe0a1",
   },
   {
-    name: "Customer Vault",
+    name: VAULT_NAMES[2],
     label: "CUSTOMER",
     description: "Decode what your customers value.",
     icon: Users,
     color: "#91eaff",
   },
   {
-    name: "Internal Business Process Vault",
+    name: VAULT_NAMES[3],
     label: "INTERNAL PROCESS",
     description: "Build the engine behind the promise.",
     icon: Factory,
     color: "#9df0c5",
   },
   {
-    name: "Learning and Growth Vault",
+    name: VAULT_NAMES[4],
     label: "LEARNING & GROWTH",
     description: "Connect capabilities to performance.",
     icon: Lightbulb,
     color: "#dcc2ff",
   },
   {
-    name: "Strategy Map Vault",
+    name: VAULT_NAMES[5],
     label: "THE BIG PICTURE",
     description: "Rebuild the map. Reveal the strategy.",
     icon: Target,
     color: "#ffc4ad",
   },
   {
-    name: "Knowledge Vault",
+    name: VAULT_NAMES[6],
     label: "KAPLAN & NORTON",
     description: "Prove your understanding. Find the exit.",
     icon: KeyRound,
@@ -140,9 +141,11 @@ export function Brand() {
 export function GameApp({
   view,
   room = 1,
+  canRevealAnswers = false,
 }: {
   view: "home" | "mission" | "room" | "review";
   room?: number;
+  canRevealAnswers?: boolean;
 }) {
   const [state, setState] = useState<State>();
   const [error, setError] = useState("");
@@ -825,6 +828,18 @@ export function GameApp({
                 <LockKeyhole size={52} />
                 <h1>Vault access restricted.</h1>
                 <p>Complete the previous room before entering this one.</p>
+                {canRevealAnswers && (
+                  <p>
+                    <Link
+                      className="button outline"
+                      href={`/instructor/answers/${room}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Show correct answers (instructor)
+                    </Link>
+                  </p>
+                )}
                 <Button asChild>
                   <Link href={`/room/${current}`}>
                     Return to current room <ArrowRight size={16} />
@@ -860,6 +875,16 @@ export function GameApp({
                   >
                     <BookOpen size={16} /> Case evidence
                   </Link>
+                  {canRevealAnswers && (
+                    <Link
+                      className="button primary"
+                      href={`/instructor/answers/${room}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Show correct answers (instructor)
+                    </Link>
+                  )}
                 </div>
                 <div className="room-toolbar">
                   <span>

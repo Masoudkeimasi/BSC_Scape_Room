@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import {
   DndContext,
   PointerSensor,
@@ -18,6 +18,9 @@ import { Button } from "./ui/button";
 import { useLocalDraft } from "@/lib/use-local-draft";
 import { isPuzzleOrder } from "@/lib/mission";
 import type { Action } from "@/lib/types";
+const tileAccents = ["#ffd166", "#50e5ff", "#7ef2b7", "#d3aeff"];
+// Decorative colours vary in every row and column; they do not encode a solution.
+const decorativeColourSlots = [0, 2, 1, 3, 1, 0, 3, 2, 2, 3, 0, 1, 3, 1, 2, 0];
 const fragmentDescriptions = [
   "Persepolis brand and Financial perspective label",
   "Vision heading and asset-profitability text fragment",
@@ -75,13 +78,16 @@ function Piece({
       aria-pressed={selected}
       disabled={disabled}
       className={`puzzle-piece ${selected ? "selected" : ""} ${drop.isOver ? "over" : ""}`}
-      style={{
-        backgroundImage: `url("${image}")`,
-        backgroundSize: "400% 400%",
-        backgroundPosition: `${((tile % 4) / 3) * 100}% ${(Math.floor(tile / 4) / 3) * 100}%`,
-        transform: CSS.Translate.toString(drag.transform),
-        zIndex: drag.isDragging ? 10 : 1,
-      }}
+      style={
+        {
+          "--tile-accent": tileAccents[decorativeColourSlots[tile]],
+          backgroundImage: `url("${image}")`,
+          backgroundSize: "400% 400%",
+          backgroundPosition: `${((tile % 4) / 3) * 100}% ${(Math.floor(tile / 4) / 3) * 100}%`,
+          transform: CSS.Translate.toString(drag.transform),
+          zIndex: drag.isDragging ? 10 : 1,
+        } as CSSProperties
+      }
     >
       <span className="piece-grip" aria-hidden="true">
         <GripVertical size={14} />
@@ -170,6 +176,12 @@ export function StrategyMapPuzzle({
     <section className="panel puzzle-panel">
       <div className="eyebrow gold">ROOM 06 / THE STRATEGY MAP VAULT</div>
       <h2>Sixteen pieces. One connected strategy.</h2>
+      <div className="puzzle-feature-chips" aria-label="Puzzle features">
+        <span>16 picture pieces</span>
+        <span>4 × 4 challenge</span>
+        <span>Drag or swap</span>
+        <span>No timer</span>
+      </div>
       <p className="muted">
         Rearrange the 4 × 4 picture puzzle to reveal the complete Strategy Map.
         All pieces face the right way: swap their positions without rotating
@@ -252,10 +264,12 @@ export function StrategyMapPuzzle({
                     >
                       <div
                         className="picture-puzzle"
-                        style={{
-                          aspectRatio: aspect,
-                          minWidth: enlarged ? 800 : undefined,
-                        }}
+                        style={
+                          {
+                            "--puzzle-image-ratio": aspect,
+                            minWidth: enlarged ? 800 : undefined,
+                          } as CSSProperties
+                        }
                         role="group"
                         aria-label="Strategy Map picture puzzle: four rows and four columns"
                       >

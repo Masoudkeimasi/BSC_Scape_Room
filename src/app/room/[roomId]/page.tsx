@@ -1,3 +1,4 @@
+import { instructor } from "@/lib/server";
 import { GameApp } from "@/components/GameApp";
 export default async function Page({
   params,
@@ -5,5 +6,11 @@ export default async function Page({
   params: Promise<{ roomId: string }>;
 }) {
   const { roomId } = await params;
-  return <GameApp view="room" room={Number(roomId)} />;
+  return (
+    <GameApp
+      view="room"
+      room={Number(roomId)}
+      canRevealAnswers={await instructor()}
+    />
+  );
 }

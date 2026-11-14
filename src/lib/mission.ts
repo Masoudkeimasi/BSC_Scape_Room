@@ -11,3 +11,13 @@ export const isPuzzleOrder = (order: unknown): order is number[] =>
   order.every((n) => Number.isInteger(n) && n >= 0 && n < PUZZLE_SIZE);
 export const isPuzzleSolved = (order: unknown) =>
   isPuzzleOrder(order) && order.every((tile, index) => tile === index);
+
+export const VAULT_NAMES = [
+  "Vision Vault",
+  "Financial Vault",
+  "Customer Vault",
+  "Internal Business Process Vault",
+  "Learning and Growth Vault",
+  "Strategy Map Vault",
+  "Knowledge Vault",
+] as const;

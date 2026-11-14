@@ -152,3 +152,11 @@ Open `/instructor`, sign in, and select **Preview Strategy Map Vault**. You can 
 The preview uses the same picture-puzzle component with an isolated test board. **Shuffle and restart preview** creates a fresh puzzle; **Reveal completed map (preview)** displays the solved image immediately. Neither action changes any student progress, unlocks mission vaults, awards points, records assessment results or enables certificates. The preview page and every preview API action verify instructor authorisation on the server, and POST requests require a same-origin header.
 
 If instructor access is not configured on Vercel, open **Project → Settings → Environment Variables**, add a strong private `INSTRUCTOR_PASSWORD` and a random stable `SESSION_SECRET`, and redeploy. Do not enter those values in chat or commit them to Git. These settings require no local Node.js installation. Alternatively use the existing Supabase instructor role described above.
+
+## Instructor answer buttons for every stage
+
+After signing in at `/instructor`, the **Answer keys / all seven stages** section provides a separate **Show correct answers** button for each vault. Each protected answer page also links to all seven stages. Signed-in instructors see a **Show correct answers (instructor)** button on student room pages, including locked-room views. These links never change student unlocking or scores.
+
+The server verifies instructor authorisation before loading course content. Correct answers are rendered only in the protected `/instructor/answers/1` through `/instructor/answers/7` pages; the keys are not placed in client JavaScript or public JSON. The pages include the three vision statements, each perspective’s three complete O–M–T–I chains and calculation results, the completed Strategy Map, and all 40 theory questions with accepted answers. Direct links return to the requested answer page after instructor sign-in.
+
+The picture puzzle now uses a brighter blue/violet/teal surround, gold/cyan/mint/violet piece frames and colourful feature chips. The original map image and its text remain unchanged. Frame colours decorate the pieces and do not indicate their correct positions.

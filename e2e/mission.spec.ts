@@ -120,6 +120,13 @@ test("complete seven vaults through boards, picture puzzle, assessment and PDF",
     .getByRole("button", { name: "Begin Strategy Map Puzzle", exact: true })
     .click();
   await expect(page.locator(".puzzle-piece")).toHaveCount(16);
+  const tileColours = await page
+    .locator(".puzzle-piece")
+    .evaluateAll((tiles) =>
+      tiles.map((tile) => getComputedStyle(tile).borderTopColor),
+    );
+  expect(new Set(tileColours).size).toBe(4);
+  await expect(page.getByLabel("Puzzle features")).toBeVisible();
   // Piece identifiers are internal test hooks; students solve using the image fragments.
   let order = await page
     .locator(".puzzle-piece")
@@ -568,4 +575,93 @@ test("instructor preview is protected and never changes student progress", async
     .getByRole("button", { name: "Shuffle and restart preview", exact: true })
     .click();
   await expect(page.locator(".puzzle-piece")).toHaveCount(16);
+});
+
+test("all seven answer keys are protected, readable and isolated from student progress", async ({
+  page,
+}) => {
+  const html = await page.request.get("/instructor/answers/2", {
+    maxRedirects: 0,
+  });
+  expect(await html.text()).not.toContain("F-O1");
+  const rsc = await page.request.get("/instructor/answers/2", {
+    maxRedirects: 0,
+    headers: { RSC: "1" },
+  });
+  expect(await rsc.text()).not.toContain("F-O1");
+  await page.goto("/room/1");
+  await expect(
+    page.getByRole("link", {
+      name: "Show correct answers (instructor)",
+      exact: true,
+    }),
+  ).toHaveCount(0);
+  const before = await (await page.request.get("/api/game")).json();
+  await page.goto("/instructor/answers/2");
+  await expect(page).toHaveURL(/instructor\?answers=2/);
+  await page
+    .getByLabel("Instructor password", { exact: true })
+    .fill("e2e-only-instructor-password");
+  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await expect(page).toHaveURL("/instructor/answers/2");
+  await expect(page.locator(".answer-chain")).toHaveCount(3);
+  await expect(page.locator(".calculation-answer")).toContainText("8 %");
+  const names = [
+    "Vision Vault",
+    "Financial Vault",
+    "Customer Vault",
+    "Internal Business Process Vault",
+    "Learning and Growth Vault",
+    "Strategy Map Vault",
+    "Knowledge Vault",
+  ];
+  for (let room = 1; room <= 7; room++) {
+    await page.goto(`/instructor/answers/${room}`);
+    await expect(
+      page.getByRole("heading", {
+        name: `${names[room - 1]} — correct answers`,
+        exact: true,
+      }),
+    ).toBeVisible();
+    if (room === 1)
+      await expect(page.locator(".vision-answer-list li")).toHaveCount(3);
+    if (room >= 2 && room <= 5) {
+      await expect(page.locator(".answer-chain")).toHaveCount(3);
+      await expect(page.locator(".answer-chain-grid dd")).toHaveCount(12);
+      await expect(page.locator(".calculation-answer")).toHaveCount(1);
+    }
+    if (room === 6)
+      await expect(page.locator(".completed-strategy-map")).toBeVisible();
+    if (room === 7)
+      await expect(page.locator(".theory-answer-list>li")).toHaveCount(40);
+  }
+  const after = await (await page.request.get("/api/game")).json();
+  expect(after.progress).toEqual(before.progress);
+  await page.goto("/room/1");
+  await expect(
+    page.getByRole("link", {
+      name: "Show correct answers (instructor)",
+      exact: true,
+    }),
+  ).toHaveAttribute("href", "/instructor/answers/1");
+  await page.goto("/instructor");
+  await page
+    .getByRole("button", { name: "Use existing instructor session" })
+    .click();
+  await expect(page.locator(".answer-stage-card")).toHaveCount(7);
+  await page
+    .getByRole("link", {
+      name: "Show correct answers — Learning and Growth Vault",
+      exact: true,
+    })
+    .click();
+  await expect(page).toHaveURL("/instructor/answers/5");
+  const logout = await page.request.post("/api/auth", {
+    headers: { Origin: "http://localhost:3100" },
+    data: { type: "logout" },
+  });
+  expect(logout.ok()).toBe(true);
+  await page.goto("/instructor/answers/5");
+  await expect(page).toHaveURL(/instructor\?answers=5/);
+  await expect(page.locator(".answer-chain")).toHaveCount(0);
 });
