@@ -1,4 +1,5 @@
-import { GameApp } from "@/components/GameApp";
+import { notFound } from "next/navigation";
+
 export default function Page() {
-  return <GameApp view="review" />;
+  notFound();
 }

@@ -1149,7 +1149,7 @@ export function GameApp({
             <h2>Make the connections.</h2>
             <ol>
               <li>
-                Read the annual review and identify three strategic statements.
+                Use the mission briefing to identify three strategic statements.
               </li>
               <li>
                 Build three Objective → Measure → Target → Initiative chains per

@@ -262,13 +262,14 @@ test("complete seven vaults through boards, picture puzzle, assessment and PDF",
   ).toBeVisible();
   expect(await page.locator(".option-select:not(:disabled)").count()).toBe(0);
 });
-test("annual review search and financial evidence tables", async ({ page }) => {
-  await page.goto("/review");
-  await page.getByLabel("Search annual review").fill("Income statement");
-  await page.getByRole("button", { name: /Evidence table/ }).click();
+test("annual review is unavailable by direct URL", async ({ page }) => {
+  const response = await page.goto("/review");
+  expect(response?.status()).toBe(404);
+  await expect(page.getByLabel("Search annual review")).toHaveCount(0);
+  await page.goto("/");
   await expect(
-    page.getByRole("cell", { name: "18,400", exact: true }),
-  ).toBeVisible();
+    page.getByRole("link", { name: /case evidence|annual review/i }),
+  ).toHaveCount(0);
 });
 test("instructor authorisation, complete import validation and anonymised export", async ({
   page,
