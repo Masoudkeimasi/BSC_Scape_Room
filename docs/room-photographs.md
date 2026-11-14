@@ -15,4 +15,4 @@ The archive contains two different Page 3 images and no Page 4 image. The additi
 
 `room-photographs.json` records original filenames and SHA-256 checksums. `src/lib/page-themes.ts` controls each photograph and its crop position. CSS gradients protect the room title's contrast; activity cards are opaque. The photographs are decorative backgrounds rather than redundant screen-reader content.
 
-The Knowledge Vault is now Room 7 with its own rose palette. The six decorative photographs retain separate room assignments. The Strategy Map puzzle uses the separate original instructor-supplied `public/images/strategy-map.png`.
+The Knowledge Vault is now Room 7 with its own rose palette. The six decorative photographs retain separate room assignments. The Strategy Map puzzle uses the instructor-approved colourful `public/images/strategy-map-colour.png`; the original supplied diagram remains at `public/images/strategy-map.png`.

@@ -120,6 +120,10 @@ test("complete seven vaults through boards, picture puzzle, assessment and PDF",
     .getByRole("button", { name: "Begin Strategy Map Puzzle", exact: true })
     .click();
   await expect(page.locator(".puzzle-piece")).toHaveCount(16);
+  await expect(page.locator(".puzzle-piece").first()).toHaveCSS(
+    "background-image",
+    /strategy-map-colour\.png/,
+  );
   const tileColours = await page
     .locator(".puzzle-piece")
     .evaluateAll((tiles) =>
@@ -209,6 +213,10 @@ test("complete seven vaults through boards, picture puzzle, assessment and PDF",
     .getByRole("button", { name: "Check Strategy Map", exact: true })
     .click();
   await expect(page.locator(".completed-strategy-map")).toBeVisible();
+  await expect(page.locator(".completed-strategy-map")).toHaveAttribute(
+    "src",
+    "/images/strategy-map-colour.png",
+  );
   await expect(page.locator(".puzzle-piece")).toHaveCount(0);
   await page.getByRole("link", { name: "ENTER NEXT ROOM" }).click();
   await expect(page).toHaveURL(/room\/7/);
